@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-
 
 import slackBolt from '@slack/bolt'; // slack/bolt uses CommonJS exports
 
-import dispatch from './commandDispatcher';
+import dispatch from './commandDispatcher.js';
 
 if (process.env.NODE_ENV !== 'production') {
   // use a .env file, but not in production!

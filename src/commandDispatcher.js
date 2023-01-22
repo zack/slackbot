@@ -1,6 +1,6 @@
-import pong from './commands/ping';
-import spell from './commands/spell';
-import spongecase from './commands/spongecase';
+import pong from './commands/ping.js';
+import spell from './commands/spell.js';
+import spongecase from './commands/spongecase.js';
 
 const RE_FLAG = /-\w/;
 
@@ -48,6 +48,16 @@ const dispatch = (context, say) => {
     COMMANDS[command].func({
       context, flags, text, say,
     });
+  } else if (command === 'help') {
+    let out = '';
+
+    for (const cmd in COMMANDS) {
+      if (Object.prototype.hasOwnProperty.call(COMMANDS, cmd)) {
+        out += `${cmd}: ${cmd.help}\n`;
+      }
+    }
+
+    say(out);
   }
 };
 
