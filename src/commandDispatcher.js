@@ -51,9 +51,11 @@ const dispatch = (context, say) => {
   } else if (command === 'help') {
     let out = '';
 
+    // Print out all commands and their help text
+    // TODO: DM this to the user
     for (const cmd in COMMANDS) {
       if (Object.prototype.hasOwnProperty.call(COMMANDS, cmd)) {
-        out += `${cmd}: ${cmd.help}\n`;
+        out += `${cmd}: ${COMMANDS[cmd].help}\n`;
       }
     }
 
