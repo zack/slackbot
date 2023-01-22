@@ -15,7 +15,7 @@ const COMMANDS = {
   },
   spongecase: {
     func: spongecase,
-    help: 'Prints out the given text but in sPoNgEcAsE',
+    help: 'Prints out the given text in sPoNgEcAsE',
   },
 };
 
