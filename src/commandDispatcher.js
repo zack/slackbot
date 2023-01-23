@@ -1,4 +1,4 @@
-import { learn, unlearn } from './commands/learn.js';
+import { gimme, learn, unlearn } from './commands/learn.js';
 import plus from './commands/plus.js';
 import pong from './commands/ping.js';
 import spell from './commands/spell.js';
@@ -9,6 +9,10 @@ import { respondDirectly } from './utils/respond.js';
 const RE_FLAG = /-\w/;
 
 const COMMANDS = {
+  gimme: {
+    func: gimme,
+    help: 'Fetch a random message learned about a user',
+  },
   learn: {
     func: learn,
     help: 'Record a message or statement to be associated with a user.',

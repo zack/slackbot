@@ -1,7 +1,8 @@
 import Database from 'better-sqlite3';
 
 import cleanUser from '../utils/cleanUser.js';
-import { respondThreaded } from '../utils/respond.js';
+import { respond, respondThreaded } from '../utils/respond.js';
+import sample from '../utils/sample.js';
 import verifyUser from '../utils/verifyUser.js';
 
 const db = new Database('../learns.db');
@@ -56,4 +57,21 @@ const unlearn = async ({
   respondThreaded(say, body, out);
 };
 
-export { learn, unlearn };
+const gimme = async ({
+  app, body, say, text,
+}) => {
+  const args = text.split(' ');
+  const learnee = cleanUser(args[0]);
+
+  if (!(await verifyUser(app, learnee))) {
+    respondThreaded(say, body, "Sorry, I don't know who that is.");
+    return;
+  }
+
+  const learns = db.prepare('SELECT content, ts FROM learns WHERE learnee = ?').all(learnee);
+  const { content } = sample(learns);
+
+  respond(say, body, content);
+};
+
+export { gimme, learn, unlearn };
