@@ -1,4 +1,4 @@
-import learn from './commands/learn.js';
+import { learn, unlearn } from './commands/learn.js';
 import plus from './commands/plus.js';
 import pong from './commands/ping.js';
 import spell from './commands/spell.js';
@@ -26,6 +26,10 @@ const COMMANDS = {
   spongecase: {
     func: spongecase,
     help: 'Prints out the given text in sPoNgEcAsE',
+  },
+  unlearn: {
+    func: unlearn,
+    help: 'Delete the record of a message or statement that is associated with a user.',
   },
 };
 
