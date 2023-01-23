@@ -1,3 +1,5 @@
+import { respond } from '../utils/respond.js';
+
 const RE_ALPHA = /[a-zA-Z]/;
 
 const SPECIAL_CHARACTERS = {
@@ -7,7 +9,7 @@ const SPECIAL_CHARACTERS = {
 };
 
 const spell = ({
-  flags, text, say,
+  body, flags, text, say,
 }) => {
   const prefix = flags.includes('y') ? 'alphabet-yellow-' : 'alphabet-white-';
 
@@ -25,7 +27,7 @@ const spell = ({
     }
   }
 
-  say(out);
+  respond(say, body, out);
 };
 
 export default spell;

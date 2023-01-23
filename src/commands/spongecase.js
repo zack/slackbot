@@ -1,6 +1,8 @@
+import { respond } from '../utils/respond.js';
+
 const RE_ALPHA = /[a-zA-Z]/;
 
-const spongecase = ({ text, say }) => {
+const spongecase = ({ say, body, text }) => {
   let up = true;
   let out = '';
 
@@ -13,7 +15,7 @@ const spongecase = ({ text, say }) => {
     }
   }
 
-  say(out);
+  respond(say, body, out);
 };
 
 export default spongecase;

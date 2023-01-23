@@ -11,7 +11,8 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'no-restricted-syntax': 0, // airbnb-base is overzealous imho
-    'import/extensions': 0, // not transpiling so we need extensions
+    'import/extensions': 0,
+    'no-else-return': 0,
+    'no-restricted-syntax': 0,
   },
 };

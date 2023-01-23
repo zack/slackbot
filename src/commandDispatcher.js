@@ -1,3 +1,4 @@
+import plus from './commands/plus.js';
 import pong from './commands/ping.js';
 import spell from './commands/spell.js';
 import spongecase from './commands/spongecase.js';
@@ -16,6 +17,10 @@ const COMMANDS = {
   spongecase: {
     func: spongecase,
     help: 'Prints out the given text in sPoNgEcAsE',
+  },
+  plus: {
+    func: plus,
+    help: 'Give another use 1 plus',
   },
 };
 
@@ -39,14 +44,14 @@ const getParts = (context) => {
   return ({ flags, text });
 };
 
-const dispatch = (context, say) => {
+const dispatch = (app, body, context, say) => {
   const command = context.matches[1].split(' ')[0];
 
   const { flags, text } = getParts(context);
 
   if (command in COMMANDS) {
     COMMANDS[command].func({
-      context, flags, text, say,
+      app, body, context, flags, text, say,
     });
   } else if (command === 'help') {
     let out = '';
