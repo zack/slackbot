@@ -4,6 +4,8 @@ import pong from './commands/ping.js';
 import spell from './commands/spell.js';
 import spongecase from './commands/spongecase.js';
 
+import { respondDirectly } from './utils/respond.js';
+
 const RE_FLAG = /-\w/;
 
 const COMMANDS = {
@@ -69,11 +71,11 @@ const dispatch = (app, body, context, say) => {
     // TODO: DM this to the user
     for (const cmd in COMMANDS) {
       if (Object.prototype.hasOwnProperty.call(COMMANDS, cmd)) {
-        out += `${cmd}: ${COMMANDS[cmd].help}\n`;
+        out += `\`${cmd}\`: ${COMMANDS[cmd].help}\n`;
       }
     }
 
-    say(out);
+    respondDirectly(app, body, out);
   }
 };
 
