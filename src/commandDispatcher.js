@@ -1,3 +1,4 @@
+import learn from './commands/learn.js';
 import plus from './commands/plus.js';
 import pong from './commands/ping.js';
 import spell from './commands/spell.js';
@@ -6,9 +7,17 @@ import spongecase from './commands/spongecase.js';
 const RE_FLAG = /-\w/;
 
 const COMMANDS = {
+  learn: {
+    func: learn,
+    help: 'Record a message or statement to be associated with a user.',
+  },
   ping: {
     func: pong,
     help: "Use to check if the bot is running in the current channel/dm. Prints 'pong' if true.",
+  },
+  plus: {
+    func: plus,
+    help: 'Give another use 1 plus',
   },
   spell: {
     func: spell,
@@ -17,10 +26,6 @@ const COMMANDS = {
   spongecase: {
     func: spongecase,
     help: 'Prints out the given text in sPoNgEcAsE',
-  },
-  plus: {
-    func: plus,
-    help: 'Give another use 1 plus',
   },
 };
 
