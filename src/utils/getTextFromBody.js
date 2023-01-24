@@ -1,12 +1,12 @@
 const getTextFromBody = async (app, body) => {
-  const messageTs = body.event.item.ts;
-  const { channel } = body.event.item;
+  const channel = body.event.item?.channel || body.event.channel;
+  const timestamp = body.event.item?.ts || body.event.ts;
 
   const replies = await app.client.conversations.replies({
     channel,
     inclusive: true,
-    ts: messageTs,
     limit: 1,
+    ts: timestamp,
   });
 
   return (replies.messages[0].text);

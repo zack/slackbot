@@ -15,31 +15,35 @@ const RE_FLAG = /-\w/;
 const COMMANDS = {
   '++': {
     func: plusCommand,
-    help: 'Give another use 1 plus.',
+    help: 'Give another use 1 plus. Alias of ?plus.',
+  },
+  deploy: {
+    func: release,
+    help: 'Fetches and deploys the most recent commit of this slackbot. Alias of ?release.',
   },
   gimme: {
     func: gimme,
-    help: 'Fetch a random message learned about a user.',
+    help: 'Fetches a random message learned about a user.',
   },
   learn: {
     func: learnCommand,
-    help: 'Record a message or statement to be associated with a user.',
+    help: 'Records a message or statement to be associated with a user.',
   },
   ping: {
     func: pong,
-    help: "Use to check if the bot is running in the current channel/dm. Prints 'pong' if true.",
+    help: "Checks if the bot is running in the current channel/dm. Prints 'pong' if true.",
   },
   plus: {
     func: plusCommand,
-    help: 'Give another use 1 plus.',
+    help: 'Gives another use 1 plus.',
   },
   pluses: {
     func: pluses,
-    help: "Check a user's plus count",
+    help: "Checks a user's plus count",
   },
   release: {
     func: release,
-    help: 'Fetch and deploy the most recent commit of this slackbot.',
+    help: 'Fetches and deploys the most recent commit of this slackbot.',
   },
   spell: {
     func: spell,
@@ -51,11 +55,11 @@ const COMMANDS = {
   },
   unlearn: {
     func: unlearnCommand,
-    help: 'Delete the record of a message or statement that is associated with a user.',
+    help: 'Deletes the record of a message or statement that is associated with a user.',
   },
   version: {
     func: version,
-    help: 'Respond with the SHA of the current commit at HEAD',
+    help: 'Responds with the SHA of the current commit at HEAD',
   },
 };
 

@@ -9,6 +9,7 @@ A basic slackbot built on Node.
 1) channels:history
 1) chat:write
 1) reactions:read
+1) reactions:write
 1) users:read
 
 ## Event Subscriptions > Subscribe to bot events
