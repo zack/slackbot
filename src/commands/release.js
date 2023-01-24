@@ -17,19 +17,19 @@ const git = simpleGit(options);
 const release = async ({ body, say }) => {
   let out;
 
-  await git.pull('origin', 'main', { '--rebase': 'true' }, (err) => {
+  git.pull('origin', 'main', { '--rebase': 'true' }, (err) => {
     if (err) {
       out = 'Something went wrong. I hope you have ssh access.';
+      respondThreaded(say, body, out);
     } else {
       const revision = childProcess
         .execSync('git rev-parse HEAD')
         .toString().trim();
 
       out = `Successfully deployed ${revision}`;
+      respondThreaded(say, body, out);
     }
   });
-
-  respondThreaded(say, body, out);
 };
 
 export default release;
