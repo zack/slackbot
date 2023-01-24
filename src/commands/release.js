@@ -15,6 +15,8 @@ const git = simpleGit(options);
 
 // Release the slackbot
 const release = async ({ body, say }) => {
+  respondThreaded(say, body, 'Good luck... (no response => good)');
+
   let out;
 
   git.pull('origin', 'main', { '--rebase': 'true' }, (err, response) => {
