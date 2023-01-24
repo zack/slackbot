@@ -1,7 +1,7 @@
 import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn.js';
-import { plusCommand, plusEmoji } from './commands/plus.js';
+import { plusCommand, plusEmoji, pluses } from './commands/plus.js';
 import pong from './commands/ping.js';
 import release from './commands/release.js';
 import spell from './commands/spell.js';
@@ -28,6 +28,10 @@ const COMMANDS = {
   plus: {
     func: plusCommand,
     help: 'Give another use 1 plus.',
+  },
+  pluses: {
+    func: pluses,
+    help: "Check a user's plus count",
   },
   release: {
     func: release,

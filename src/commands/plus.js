@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 
 import cleanUser from '../utils/cleanUser.js';
-import { respondThreaded } from '../utils/respond.js';
+import { respond, respondThreaded } from '../utils/respond.js';
 import verifyUser from '../utils/verifyUser.js';
 
 const db = new Database('../pluses.db');
@@ -69,4 +69,22 @@ const plusEmoji = async ({
   plus(app, body, note, plusee, pluser, pluserName, say);
 };
 
-export { plusCommand, plusEmoji };
+const pluses = async ({
+  app, body, text, say,
+}) => {
+  const args = text.split(' ');
+  const plusee = cleanUser(args[0]);
+
+  if (!(await verifyUser(app, plusee))) {
+    respondThreaded(say, body, "Sorry, I don't know who that is.");
+    return;
+  }
+
+  const { plusCount } = db.prepare('SELECT count(*) as plusCount FROM pluses WHERE plusee = ?').get(plusee);
+
+  const out = `<@${plusee}> has *${plusCount} pluses*!`;
+
+  respond(say, body, out);
+};
+
+export { plusCommand, plusEmoji, pluses };
