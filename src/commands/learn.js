@@ -10,23 +10,21 @@ const RE_USER = /^<@.*>$/;
 
 const db = new Database('../learns.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
-db.exec('CREATE TABLE IF NOT EXISTS learns(learnee TEXT, learner TEXT, content TEXT, ts DATETIME DEFAULT CURRENT_TIMESTAMP)');
+db.exec(`CREATE TABLE IF NOT EXISTS learns(
+                learnee TEXT,
+                learner TEXT,
+                content TEXT,
+                ts DATETIME DEFAULT CURRENT_TIMESTAMP,
+                unique(learnee, content))`);
 
 const gimme = async ({
   body, say, text,
 }) => {
-  let learnee;
-
-  // gimme on a user
-  if (RE_USER.exec(text) !== null) {
-    learnee = cleanUser(text);
-  } else {
-    learnee = text;
-  }
+  const learnee = (RE_USER.exec(text) !== null)
+    ? cleanUser(text)
+    : text;
 
   const learns = db.prepare('SELECT content, ts FROM learns WHERE learnee = ?').all(learnee);
-
-  console.log(learns);
 
   let out;
   if (learns.length > 0) {
@@ -40,32 +38,38 @@ const gimme = async ({
 };
 
 const learn = async (app, body, content, learnee, learner, learnerName, say) => {
-  if (!(await verifyUser(app, learnee))) {
-    respondThreaded(say, body, "Sorry, I don't know who that is.");
-    return;
-  }
-
   let out;
   if (content.trim().length > 0) {
-    db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, content);
-    out = `Learned about <@${learnee}> (by ${learnerName})!`;
+    try {
+      db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, content);
+
+      if (await verifyUser(app, learnee)) {
+        out = `Learned about <@${learnee}> (by ${learnerName})!`;
+      } else {
+        out = `Learned about ${learnee} (by ${learnerName})!`;
+      }
+
+      respondThreaded(say, body, out);
+    } catch {
+      respondThreaded(say, body, 'I already know that.');
+    }
   } else {
     out = 'No empty learns!';
   }
-
-  respondThreaded(say, body, out);
 };
 
 const learnCommand = async ({
   app, body, text, say,
 }) => {
   const args = text.split(' ');
-  const learnee = cleanUser(args[0]);
+  const learnee = (RE_USER.exec(args[0]) !== null)
+    ? cleanUser(args[0])
+    : args[0];
   const learner = body.event.user;
   const learnerProfile = await app.client.users.info({ user: learner });
   const learnerName = learnerProfile.user.profile.display_name;
 
-  if (!(await verifyUser(app, learnee))) {
+  if (RE_USER.exec(text) && !(await verifyUser(app, learnee))) {
     respondThreaded(say, body, "Sorry, I don't know who that is.");
     return;
   }
