@@ -5,6 +5,7 @@ import { plusCommand, plusEmoji } from './commands/plus.js';
 import pong from './commands/ping.js';
 import spell from './commands/spell.js';
 import spongecase from './commands/spongecase.js';
+import version from './commands/version.js';
 
 import { respondDirectly } from './utils/respond.js';
 
@@ -38,6 +39,10 @@ const COMMANDS = {
   unlearn: {
     func: unlearnCommand,
     help: 'Delete the record of a message or statement that is associated with a user.',
+  },
+  version: {
+    func: version,
+    help: 'Respond with the SHA of the current commit at HEAD',
   },
 };
 
