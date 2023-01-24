@@ -18,13 +18,13 @@ A basic slackbot built on Node.
 
 # Development & Deployment
 1) Follow the instructions [here](https://slack.dev/bolt-python/tutorial/getting-started) to create and install a new app and get your secret tokens.
-1) Turn on socket mode at https://app.slack.com/app-settings/<something>/<something_else>/socket-mode
+1) Turn on socket mode at https://app.slack.com/app-settings/SOMETHING/SOMETHING_ELSE/socket-mode
 1) Add the token you generate when you turn on socket mode to `.env` as `SOCKET_TOKEN`
 1) Create a directory for the bot and then run `git clone` from inside this directory. The parent repo will hold the databases and some logs.
 1) Inside the git repo: `$ npm install`
 1) Finish filling out `.env` with `SLACK_SIGNING_TOKEN` and `SLACK_BOT_TOKEN`.
-1) Grant the necessary permissions (see above) under "Scopes > Bot Token Scopes" at https://api.slack.com/apps/<something>/oauth?
-1) Enable and subscribe to the appropriate events (see above) at https://api.slack.com/apps/<something>/event-subscriptions?
+1) Grant the necessary permissions (see above) under "Scopes > Bot Token Scopes" at https://api.slack.com/apps/SOMETHING/oauth?
+1) Enable and subscribe to the appropriate events (see above) at https://api.slack.com/apps/SOMETHING/event-subscriptions?
 1) In the parent directory: `$ lt --port 3000 --subdomain yoursubdomainhere > lt.out &`
 1) Fill in the request URL as https://yoursubdomainhere.loca.lt/slack/events
 1) In the git repo: `$ pm2 start src/app.js --watch`
