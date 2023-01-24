@@ -1,5 +1,7 @@
-import { gimme, learn, unlearn } from './commands/learn.js';
-import plus from './commands/plus.js';
+import {
+  gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
+} from './commands/learn.js';
+import { plusCommand, plusEmoji } from './commands/plus.js';
 import pong from './commands/ping.js';
 import spell from './commands/spell.js';
 import spongecase from './commands/spongecase.js';
@@ -14,7 +16,7 @@ const COMMANDS = {
     help: 'Fetch a random message learned about a user',
   },
   learn: {
-    func: learn,
+    func: learnCommand,
     help: 'Record a message or statement to be associated with a user.',
   },
   ping: {
@@ -22,7 +24,7 @@ const COMMANDS = {
     help: "Use to check if the bot is running in the current channel/dm. Prints 'pong' if true.",
   },
   plus: {
-    func: plus,
+    func: plusCommand,
     help: 'Give another use 1 plus',
   },
   spell: {
@@ -34,8 +36,20 @@ const COMMANDS = {
     help: 'Prints out the given text in sPoNgEcAsE',
   },
   unlearn: {
-    func: unlearn,
+    func: unlearnCommand,
     help: 'Delete the record of a message or statement that is associated with a user.',
+  },
+};
+
+const REACTIONS = {
+  learn: {
+    func: learnEmoji,
+  },
+  heavy_plus_sign: {
+    func: plusEmoji,
+  },
+  unlearn: {
+    func: unlearnEmoji,
   },
 };
 
@@ -59,7 +73,7 @@ const getParts = (context) => {
   return ({ flags, text });
 };
 
-const dispatch = (app, body, context, say) => {
+const dispatchCommand = (app, body, context, say) => {
   const command = context.matches[1].split(' ')[0];
 
   const { flags, text } = getParts(context);
@@ -83,4 +97,12 @@ const dispatch = (app, body, context, say) => {
   }
 };
 
-export default dispatch;
+const dispatchReaction = (app, body, context, reaction, say) => {
+  if (reaction in REACTIONS) {
+    REACTIONS[reaction].func({
+      app, body, context, say,
+    });
+  }
+};
+
+export { dispatchCommand, dispatchReaction };

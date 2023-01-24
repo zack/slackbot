@@ -18,21 +18,11 @@ const getNote = (args) => {
   }
 };
 
-const plus = async ({
-  app, body, text, say,
-}) => {
-  const args = text.split(' ');
-  const plusee = cleanUser(args[0]);
-  const pluser = body.event.user;
-  const pluserProfile = await app.client.users.info({ user: pluser });
-  const pluserName = pluserProfile.user.profile.display_name;
-
+const plus = async (app, body, note, plusee, pluser, pluserName, say) => {
   if (!(await verifyUser(app, plusee))) {
     respondThreaded(say, body, "Sorry, I don't know who that is.");
     return;
   }
-
-  const note = getNote(args);
 
   let out;
   if (pluser === plusee) {
@@ -48,4 +38,35 @@ const plus = async ({
   respondThreaded(say, body, out);
 };
 
-export default plus;
+const plusCommand = async ({
+  app, body, text, say,
+}) => {
+  const args = text.split(' ');
+  const plusee = cleanUser(args[0]);
+  const pluser = body.event.user;
+  const pluserProfile = await app.client.users.info({ user: pluser });
+  const pluserName = pluserProfile.user.profile.display_name;
+
+  if (!(await verifyUser(app, plusee))) {
+    respondThreaded(say, body, "Sorry, I don't know who that is.");
+    return;
+  }
+
+  const note = getNote(args);
+
+  plus(app, body, note, plusee, pluser, pluserName, say);
+};
+
+const plusEmoji = async ({
+  app, body, say,
+}) => {
+  const plusee = body.event.item_user;
+  const pluser = body.event.user;
+  const pluserProfile = await app.client.users.info({ user: pluser });
+  const pluserName = pluserProfile.user.profile.display_name;
+  const note = '';
+
+  plus(app, body, note, plusee, pluser, pluserName, say);
+};
+
+export { plusCommand, plusEmoji };

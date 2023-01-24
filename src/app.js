@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-
 
 import slackBolt from '@slack/bolt';
 
-import dispatch from './commandDispatcher.js';
+import { dispatchCommand, dispatchReaction } from './commandDispatcher.js';
 
 if (process.env.NODE_ENV !== 'production') {
   // use a .env file, but not in production!
@@ -19,7 +19,14 @@ const app = new App({
 
 // Messages that start with ? are interpreted as commands
 app.message(/^\?(.*)/, async ({ body, context, say }) => {
-  dispatch(app, body, context, say);
+  dispatchCommand(app, body, context, say);
+});
+
+app.event('reaction_added', async ({
+  body, context, say,
+}) => {
+  const { reaction } = body.event;
+  dispatchReaction(app, body, context, reaction, say);
 });
 
 (async () => {
