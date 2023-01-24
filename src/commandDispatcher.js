@@ -3,6 +3,7 @@ import {
 } from './commands/learn.js';
 import { plusCommand, plusEmoji } from './commands/plus.js';
 import pong from './commands/ping.js';
+import release from './commands/release.js';
 import spell from './commands/spell.js';
 import spongecase from './commands/spongecase.js';
 import version from './commands/version.js';
@@ -14,7 +15,7 @@ const RE_FLAG = /-\w/;
 const COMMANDS = {
   gimme: {
     func: gimme,
-    help: 'Fetch a random message learned about a user',
+    help: 'Fetch a random message learned about a user.',
   },
   learn: {
     func: learnCommand,
@@ -26,7 +27,11 @@ const COMMANDS = {
   },
   plus: {
     func: plusCommand,
-    help: 'Give another use 1 plus',
+    help: 'Give another use 1 plus.',
+  },
+  release: {
+    func: release,
+    help: 'Fetch and deploy the most recent commit of this slackbot.',
   },
   spell: {
     func: spell,
@@ -34,7 +39,7 @@ const COMMANDS = {
   },
   spongecase: {
     func: spongecase,
-    help: 'Prints out the given text in sPoNgEcAsE',
+    help: 'Prints out the given text in sPoNgEcAsE.',
   },
   unlearn: {
     func: unlearnCommand,
