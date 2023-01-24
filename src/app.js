@@ -15,6 +15,7 @@ const { App } = slackBolt;
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
+  ignoreSelf: false,
 });
 
 // Messages that start with ? are interpreted as commands
