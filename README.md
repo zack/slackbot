@@ -14,7 +14,11 @@ A basic slackbot built on Node.
 
 ## Event Subscriptions > Subscribe to bot events
 1) message.channels
-2) reaction_added
+1) message.groups
+1) message.im
+1) message.mpim
+1) reaction_added
+
 
 # Development & Deployment
 1) Follow the instructions [here](https://slack.dev/bolt-python/tutorial/getting-started) to create and install a new app and get your secret tokens.
