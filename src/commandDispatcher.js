@@ -13,6 +13,10 @@ import { respondDirectly } from './utils/respond.js';
 const RE_FLAG = /-\w/;
 
 const COMMANDS = {
+  '++': {
+    func: plusCommand,
+    help: 'Give another use 1 plus.',
+  },
   gimme: {
     func: gimme,
     help: 'Fetch a random message learned about a user.',
