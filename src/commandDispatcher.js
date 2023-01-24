@@ -108,6 +108,10 @@ const dispatchCommand = (app, body, context, say) => {
     }
 
     respondDirectly(app, body, out);
+  } else {
+    COMMANDS.gimme.func({
+      body, context, say, text: command,
+    });
   }
 };
 

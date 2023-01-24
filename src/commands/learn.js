@@ -6,25 +6,37 @@ import sample from '../utils/sample.js';
 import verifyUser from '../utils/verifyUser.js';
 import { respond, respondThreaded } from '../utils/respond.js';
 
+const RE_USER = /^<@.*>$/;
+
 const db = new Database('../learns.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
 db.exec('CREATE TABLE IF NOT EXISTS learns(learnee TEXT, learner TEXT, content TEXT, ts DATETIME DEFAULT CURRENT_TIMESTAMP)');
 
 const gimme = async ({
-  app, body, say, text,
+  body, say, text,
 }) => {
-  const args = text.split(' ');
-  const learnee = cleanUser(args[0]);
+  let learnee;
 
-  if (!(await verifyUser(app, learnee))) {
-    respondThreaded(say, body, "Sorry, I don't know who that is.");
-    return;
+  // gimme on a user
+  if (RE_USER.exec(text) !== null) {
+    learnee = cleanUser(text);
+  } else {
+    learnee = text;
   }
 
   const learns = db.prepare('SELECT content, ts FROM learns WHERE learnee = ?').all(learnee);
-  const { content } = sample(learns);
 
-  respond(say, body, content);
+  console.log(learns);
+
+  let out;
+  if (learns.length > 0) {
+    const { content } = sample(learns);
+    out = content;
+  } else {
+    out = 'I got nothin.';
+  }
+
+  respond(say, body, out);
 };
 
 const learn = async (app, body, content, learnee, learner, learnerName, say) => {
@@ -33,9 +45,13 @@ const learn = async (app, body, content, learnee, learner, learnerName, say) => 
     return;
   }
 
-  db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, content);
-
-  const out = `Learned about <@${learnee}> (by ${learnerName})!`;
+  let out;
+  if (content.trim().length > 0) {
+    db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, content);
+    out = `Learned about <@${learnee}> (by ${learnerName})!`;
+  } else {
+    out = 'No empty learns!';
+  }
 
   respondThreaded(say, body, out);
 };
