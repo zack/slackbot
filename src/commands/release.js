@@ -17,7 +17,7 @@ const git = simpleGit(options);
 const release = async ({ body, say }) => {
   let out;
 
-  git.pull('origin', 'main', { '--rebase': 'true' }, (err) => {
+  git.pull('origin', 'main', { '--rebase': 'true' }, (err, response) => {
     if (err) {
       out = 'Something went wrong. I hope you have ssh access.';
       respondThreaded(say, body, out);
@@ -26,7 +26,11 @@ const release = async ({ body, say }) => {
         .execSync('git rev-parse HEAD')
         .toString().trim();
 
-      out = `Successfully deployed ${revision}`;
+      if (response.summary.changes > 0) {
+        out = `Successfully deployed ${revision}`;
+      } else {
+        out = `No changes detected. Already on latest commit: ${revision}`;
+      }
       respondThreaded(say, body, out);
     }
   });
