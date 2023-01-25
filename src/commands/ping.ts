@@ -1,5 +1,5 @@
-import sample from '../utils/sample.js';
-import getAllEmojis from '../utils/getAllEmojis.js';
+import sample from '../utils/sample';
+import getAllEmojis from '../utils/getAllEmojis';
 
 const pong = async ({ app, body }) => {
   const timestamp = body.event.ts;

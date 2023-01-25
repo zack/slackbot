@@ -1,15 +1,15 @@
 import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
-} from './commands/learn.js';
-import { plusCommand, plusEmoji, pluses } from './commands/plus.js';
-import emojibomb from './commands/emojibomb.js';
-import pong from './commands/ping.js';
-import release from './commands/release.js';
-import spell from './commands/spell.js';
-import spongecase from './commands/spongecase.js';
-import version from './commands/version.js';
+} from './commands/learn';
+import { plusCommand, plusEmoji, pluses } from './commands/plus';
+import emojibomb from './commands/emojibomb';
+import pong from './commands/ping';
+import release from './commands/release';
+import spell from './commands/spell';
+import spongecase from './commands/spongecase';
+import version from './commands/version';
 
-import { respondDirectly } from './utils/respond.js';
+import { respondDirectly } from './utils/respond';
 
 const RE_FLAG = /-\w/;
 
@@ -82,7 +82,7 @@ const REACTIONS = {
 
 const getParts = (context) => {
   const tokens = context.matches[1].split(' ').slice(1);
-  const flags = [];
+  const flags :string[] = [];
   let firstNonflagIndex;
 
   for (const [index, token] of tokens.entries()) {
@@ -123,7 +123,7 @@ const dispatchCommand = (app, body, context, say) => {
     respondDirectly(app, body, out);
   } else {
     COMMANDS.gimme.func({
-      body, context, say, text: command,
+      body, say, text: command,
     });
   }
 };

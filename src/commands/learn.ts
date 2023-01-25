@@ -1,8 +1,8 @@
 import Database from 'better-sqlite3';
 
-import getTextFromBody from '../utils/getTextFromBody.js';
-import sample from '../utils/sample.js';
-import { respond, respondThreaded } from '../utils/respond.js';
+import getTextFromBody from '../utils/getTextFromBody';
+import sample from '../utils/sample';
+import { respond, respondThreaded } from '../utils/respond';
 
 const db = new Database('../learns.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage

@@ -1,8 +1,8 @@
 import Database from 'better-sqlite3';
 
-import cleanUser from '../utils/cleanUser.js';
-import { respond, respondThreaded } from '../utils/respond.js';
-import verifyUser from '../utils/verifyUser.js';
+import cleanUser from '../utils/cleanUser';
+import { respond, respondThreaded } from '../utils/respond';
+import verifyUser from '../utils/verifyUser';
 
 const db = new Database('../pluses.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage

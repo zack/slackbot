@@ -2,7 +2,7 @@ import { simpleGit } from 'simple-git';
 
 import childProcess from 'child_process';
 
-import { respondThreaded } from '../utils/respond.js';
+import { respondThreaded } from '../utils/respond';
 
 const options = {
   baseDir: process.cwd(),
@@ -37,11 +37,13 @@ const release = async ({ body, say }) => {
         .toString().trim();
 
       if (response.summary.changes > 0) {
-        out = `Successfully deployed ${SHA}`;
+        out = `Pulled new version: ${SHA} (${title}). Rebuilding now.`;
+        respondThreaded(say, body, out);
+        childProcess.execSync('npm run build');
       } else {
         out = `No changes deteced. Already on latest commit: ${SHA} (${title})`;
+        respondThreaded(say, body, out);
       }
-      respondThreaded(say, body, out);
     }
   });
 };

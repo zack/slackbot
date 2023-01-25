@@ -1,6 +1,6 @@
 import childProcess from 'child_process';
 
-import { respondThreaded } from '../utils/respond.js';
+import { respondThreaded } from '../utils/respond';
 
 // Respond with the SHA of the git commit at HEAD
 const version = ({ body, say }) => {

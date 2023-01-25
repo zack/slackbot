@@ -20,7 +20,7 @@ A basic slackbot built on Node.
 1) message.mpim
 1) reaction_added
 
-# Development & Deployment
+# Setup
 1) Follow the instructions [here](https://slack.dev/bolt-python/tutorial/getting-started) to create and install a new app and get your secret tokens.
 1) Turn on socket mode at https://app.slack.com/app-settings/SOMETHING/SOMETHING_ELSE/socket-mode
 1) `$ cp .env.sample .env` and add the token you generate when you turn on socket mode to `.env` as `SOCKET_TOKEN`
@@ -31,9 +31,10 @@ A basic slackbot built on Node.
 1) Enable and subscribe to the appropriate events (see above) at https://api.slack.com/apps/SOMETHING/event-subscriptions?
 1) In the parent directory: `$ lt --port 3000 --subdomain yoursubdomainhere > lt.out &`
 1) Fill in the request URL as https://yoursubdomainhere.loca.lt/slack/events
-1) In the git repo: `$ pm2 start src/app.js --watch`
+1) For development, run `$ npm run start`
+1) For production, first run `$npm run build` and then, if using pm2, run : `$ pm2 start built/app.js --watch`
 1) Your bot should now be able to respond to commands!
-1) To deploy the latest version, send the command `?deploy`. Check what version is running with `?version`.
+1) To deploy the latest version in production, send the command `?deploy`. Check what version is running with `?version`.
 
 # Usage
 1) Commands are run using the ?command syntax.

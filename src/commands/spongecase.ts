@@ -1,4 +1,4 @@
-import { respond } from '../utils/respond.js';
+import { respond } from '../utils/respond';
 
 const RE_ALPHA = /[a-zA-Z]/;
 
