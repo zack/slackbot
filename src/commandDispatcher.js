@@ -2,6 +2,7 @@ import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn.js';
 import { plusCommand, plusEmoji, pluses } from './commands/plus.js';
+import emojibomb from './commands/emojibomb.js';
 import pong from './commands/ping.js';
 import release from './commands/release.js';
 import spell from './commands/spell.js';
@@ -20,6 +21,10 @@ const COMMANDS = {
   deploy: {
     func: release,
     help: 'Fetches and deploys the most recent commit of this slackbot. Alias of ?release.',
+  },
+  emojibomb: {
+    func: emojibomb,
+    help: 'Try it.',
   },
   gimme: {
     func: gimme,
