@@ -13,7 +13,7 @@ module.exports = {
   rules: {
     'import/extensions': 0,
     'no-else-return': 0,
-    'no-plusplus: 0,
+    'no-plusplus': 0,
     'no-restricted-syntax': 0,
   },
 };
