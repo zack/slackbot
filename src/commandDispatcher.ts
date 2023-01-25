@@ -24,7 +24,7 @@ const COMMANDS = {
   },
   emojime: {
     func: pong,
-    help: 'Alias for ping.',
+    help: 'Like ping.',
   },
   emojibomb: {
     func: emojibomb,
