@@ -31,7 +31,7 @@ const COMMANDS = {
   },
   ping: {
     func: pong,
-    help: "Checks if the bot is running in the current channel/dm. Prints 'pong' if true.",
+    help: "Checks if the bot is running in the current channel/dm. Responds with an emoji if it's running.",
   },
   plus: {
     func: plusCommand,

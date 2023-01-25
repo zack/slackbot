@@ -19,7 +19,6 @@ A basic slackbot built on Node.
 1) message.mpim
 1) reaction_added
 
-
 # Development & Deployment
 1) Follow the instructions [here](https://slack.dev/bolt-python/tutorial/getting-started) to create and install a new app and get your secret tokens.
 1) Turn on socket mode at https://app.slack.com/app-settings/SOMETHING/SOMETHING_ELSE/socket-mode
@@ -34,3 +33,8 @@ A basic slackbot built on Node.
 1) In the git repo: `$ pm2 start src/app.js --watch`
 1) Your bot should now be able to respond to commands!
 1) To deploy the latest version, send the command `?deploy`. Check what version is running with `?version`.
+
+# Usage
+1) Commands are run using the ?command syntax.
+1) ?help for a list of commands
+1) There are also some (as of now undocumented) emoji interactions. Sorry!
