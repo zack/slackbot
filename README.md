@@ -35,7 +35,7 @@ A basic slackbot built on Node.
 1) In the parent directory: `$ lt --port 3000 --subdomain yoursubdomainhere > lt.out &`
 1) Fill in the request URL as https://yoursubdomainhere.loca.lt/slack/events
 1) For development, run `$ npm run start`
-1) For production, first run `$npm run build` and then, if using pm2, run : `$ pm2 start built/app.js --watch`
+1) For production, first run `$npm run build` and then, if using pm2, run : `$ pm2 start ecosystem.config.js`
 1) If you're running multiple slackbots, rename each one with `$ pm2 restart <id> -n <newname>`.
 1) Your bot should now be able to respond to commands!
 1) To deploy the latest version in production, send the command `?deploy`. Check what version is running with `?version`.

@@ -3,6 +3,7 @@ import { simpleGit } from 'simple-git';
 import childProcess from 'child_process';
 
 import { respondThreaded } from '../utils/respond';
+import rebuild from './rebuild';
 
 const options = {
   baseDir: process.cwd(),
@@ -37,10 +38,7 @@ const release = async ({ body, say }) => {
         .toString().trim();
 
       if (response.summary.changes > 0) {
-        out = `Pulled new version: ${SHA} (${title}). Rebuilding now.`;
-        respondThreaded(say, body, out);
-        // Give it time to respond before building
-        setTimeout(() => childProcess.execSync('npm run build'), 1000);
+        rebuild({ body, say });
       } else {
         out = `No changes deteced. Already on latest commit: ${SHA} (${title})`;
         respondThreaded(say, body, out);

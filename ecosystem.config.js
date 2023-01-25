@@ -4,5 +4,6 @@ module.exports = {
     namespace: 'slackbot',
     script: './built/app.js',
     watch: ['./built'],
+    watch_delay: 3000,
   }],
 };
