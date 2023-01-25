@@ -46,7 +46,6 @@ A basic slackbot built on Node.
 1) There are also some (as of now undocumented) emoji interactions. Sorry!
 
 
-# Emoji you will want
-(TODO: Add these to the repo)
-1) :learn: and :unlearn:
-1) The Slack bubble letters emoji pack plus :spacer:
+# Emojis you will want
+1) The Slack bubble letters emoji pack
+1) The emojis in the `emojis` directory. Make sure you don't change the names.
