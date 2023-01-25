@@ -9,6 +9,9 @@ A basic slackbot built on Node.
 1) channels:history
 1) chat:write
 1) emoji:read
+1) groups:history
+1) im:history
+1) mpim:history
 1) reactions:read
 1) reactions:write
 1) users:read
