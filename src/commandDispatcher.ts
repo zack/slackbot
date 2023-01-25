@@ -3,6 +3,7 @@ import {
 } from './commands/learn';
 import { plusCommand, plusEmoji, pluses } from './commands/plus';
 import emojibomb from './commands/emojibomb';
+import github from './commands/github';
 import pong from './commands/ping';
 import release from './commands/release';
 import spell from './commands/spell';
@@ -33,6 +34,10 @@ const COMMANDS = {
   gimme: {
     func: gimme,
     help: 'Fetches a random message learned about a user.',
+  },
+  github: {
+    func: github,
+    help: 'Returns the GitHub URL where you can find and contribute to this project.',
   },
   learn: {
     func: learnCommand,
