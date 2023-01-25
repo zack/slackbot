@@ -5,6 +5,7 @@ import { plusCommand, plusEmoji, pluses } from './commands/plus';
 import emojibomb from './commands/emojibomb';
 import github from './commands/github';
 import pong from './commands/ping';
+import rebuild from './commands/rebuild';
 import release from './commands/release';
 import spell from './commands/spell';
 import spongecase from './commands/spongecase';
@@ -54,6 +55,10 @@ const COMMANDS = {
   pluses: {
     func: pluses,
     help: "Checks a user's plus count",
+  },
+  rebuild: {
+    func: rebuild,
+    help: 'Rebuilds the typescript.',
   },
   release: {
     func: release,
