@@ -38,3 +38,9 @@ A basic slackbot built on Node.
 1) Commands are run using the ?command syntax.
 1) ?help for a list of commands
 1) There are also some (as of now undocumented) emoji interactions. Sorry!
+
+
+# Emoji you will want
+(TODO: Add these to the repo)
+1) :learn: and :unlearn:
+1) The Slack bubble letters emoji pack plus :spacer:
