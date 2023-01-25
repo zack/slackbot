@@ -39,7 +39,8 @@ const release = async ({ body, say }) => {
       if (response.summary.changes > 0) {
         out = `Pulled new version: ${SHA} (${title}). Rebuilding now.`;
         respondThreaded(say, body, out);
-        childProcess.execSync('npm run build');
+        // Give it time to respond before building
+        setTimeout(() => childProcess.execSync('npm run build'), 1000);
       } else {
         out = `No changes deteced. Already on latest commit: ${SHA} (${title})`;
         respondThreaded(say, body, out);
