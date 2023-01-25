@@ -1,18 +1,17 @@
-import emojis from '../constants/emojis.js';
 import sample from '../utils/sample.js';
+import getAllEmojis from '../utils/getAllEmojis.js';
 
-const emojibomb = ({ app, body }) => {
+const emojibomb = async ({ app, body }) => {
   const timestamp = body.event.ts;
   const { channel } = body.event;
-  let emoji;
 
-  // 23 is the limit per person (or in this case, bot)
+  const emojiList = await getAllEmojis(app);
+
+  // Limit appears to be somewhere between 21 and 23 depending on the workspace
   for (let i = 0; i < 23; i++) {
-    emoji = sample(emojis);
-
     app.client.reactions.add({
       channel,
-      name: emoji,
+      name: sample(emojiList),
       timestamp,
     });
   }

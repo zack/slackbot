@@ -8,6 +8,7 @@ A basic slackbot built on Node.
 ## OAuth & Permissions > Scopes > Bot Token Scopes
 1) channels:history
 1) chat:write
+1) emoji:read
 1) reactions:read
 1) reactions:write
 1) users:read
