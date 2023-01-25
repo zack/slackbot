@@ -22,6 +22,10 @@ const COMMANDS = {
     func: release,
     help: 'Fetches and deploys the most recent commit of this slackbot. Alias of ?release.',
   },
+  emojime: {
+    func: pong,
+    help: 'Like ping.',
+  },
   emojibomb: {
     func: emojibomb,
     help: 'Try it.',

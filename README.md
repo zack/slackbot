@@ -26,7 +26,7 @@ A basic slackbot built on Node.
 # Setup
 1) Follow the instructions [here](https://slack.dev/bolt-python/tutorial/getting-started) to create and install a new app and get your secret tokens.
 1) Turn on socket mode at https://app.slack.com/app-settings/SOMETHING/SOMETHING_ELSE/socket-mode
-1) `$ cp .env.sample .env` and add the token you generate when you turn on socket mode to `.env` as `SOCKET_TOKEN`
+1) `$ cp .env.sample .env` and add the token you generated when you turn on socket mode to `.env` as `SOCKET_TOKEN`
 1) Create a directory for the bot and then run `git clone` from inside this directory. The parent repo will hold the databases and some logs.
 1) Inside the git repo: `$ npm install`
 1) Finish filling out `.env` with `SLACK_SIGNING_TOKEN` and `SLACK_BOT_TOKEN`.
