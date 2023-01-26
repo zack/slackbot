@@ -10,7 +10,7 @@ let ENABLED;
 let GIPHYCLIENT;
 const RATING = process.env.GIPHY_RATING;
 
-if (process.env.GIPHY_API_KEY !== undefined) {
+if (process.env.GIPHY_API_KEY !== undefined || process.env.GIPHY_API_KEY === ' ') {
   try {
     GIPHYCLIENT = giphy(process.env.GIPHY_API_KEY);
     ENABLED = true;
