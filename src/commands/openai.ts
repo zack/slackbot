@@ -36,6 +36,7 @@ const aiart = async ({
   const message = await app.client.chat.postMessage({
     channel: body.event.channel,
     text: 'Working...',
+    thread_ts: body.event.thread_ts,
   });
 
   try {
@@ -84,6 +85,7 @@ const aitext = async ({
     channel: body.event.channel,
     temperature,
     text: 'Working...',
+    thread_ts: body.event.thread_ts,
   });
 
   try {
