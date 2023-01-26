@@ -4,14 +4,30 @@ import { respond, respondThreaded } from '../utils/respond';
 
 dotenv.config();
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+let ENABLED = false;
+let OPENAI;
+
+if (process.env.OPENAI_API_KEY !== undefined) {
+  try {
+    const configuration = new Configuration({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    OPENAI = new OpenAIApi(configuration);
+    ENABLED = true;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+  }
+}
 
 const aiart = async ({
   app, body, text, say,
 }) => {
+  if (!ENABLED) {
+    respondThreaded(say, body, 'This command is not enabled. Likely, no valid API key was provided in `.env`.');
+    return;
+  }
+
   if (text.trim().length === 0) {
     respondThreaded(say, body, 'Usage: `?aiart <prompt>`');
     return;
@@ -23,7 +39,7 @@ const aiart = async ({
   });
 
   try {
-    const response = await openai.createImage({
+    const response = await OPENAI.createImage({
       prompt: text,
       n: 1,
       size: '1024x1024',
@@ -43,6 +59,11 @@ const aiart = async ({
 const aitext = async ({
   app, body, flags, text, say,
 }) => {
+  if (!ENABLED) {
+    respondThreaded(say, body, 'This command is not enabled. Likely, no valid API key was provided.');
+    return;
+  }
+
   if (text.trim().length === 0) {
     respondThreaded(say, body, 'Usage: `?aitext <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aitext -l300 -t5 <prompt>');
     return;
@@ -66,7 +87,7 @@ const aitext = async ({
   });
 
   try {
-    const response = await openai.createCompletion({
+    const response = await OPENAI.createCompletion({
       max_tokens: maxTokens,
       model: 'text-davinci-003',
       n: 1,
