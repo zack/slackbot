@@ -48,9 +48,16 @@ const aitext = async ({
     return;
   }
 
-  const temperature = flags.length > 0 && flags[0][0] === 't' && /[0-9]/.exec(flags[0][1]) !== null
-    ? flags[0][1]
-    : 0;
+  let temperature = 0;
+  let maxTokens = 32;
+
+  for (const flag of flags) {
+    if (flag[0] === 'l') {
+      maxTokens = Math.max(Math.min(parseInt(flag[1], 10), 4000), 2);
+    } else if (flag[0] === 't') {
+      temperature = Math.max(Math.min(parseInt(flag[1], 10), 9), 0);
+    }
+  }
 
   const message = await app.client.chat.postMessage({
     channel: body.event.channel,
@@ -60,9 +67,10 @@ const aitext = async ({
 
   try {
     const response = await openai.createCompletion({
+      max_tokens: maxTokens,
       model: 'text-davinci-003',
-      prompt: text,
       n: 1,
+      prompt: text,
     });
     respond(say, body, `${response.data.choices[0].text}`);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

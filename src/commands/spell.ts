@@ -11,7 +11,7 @@ const SPECIAL_CHARACTERS = {
 const spell = ({
   body, flags, text, say,
 }) => {
-  const prefix = flags.includes('y') ? 'alphabet-yellow-' : 'alphabet-white-';
+  const prefix = flags[0]?.includes('y') ? 'alphabet-yellow-' : 'alphabet-white-';
 
   let out = '';
 

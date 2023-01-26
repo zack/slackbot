@@ -115,12 +115,12 @@ const REACTIONS = {
 
 const getParts = (context) => {
   const tokens = context.matches[1].split(' ').slice(1);
-  const flags :string[] = [];
+  const flags :string[][] = [];
   let firstNonflagIndex;
 
   for (const [index, token] of tokens.entries()) {
     if (RE_FLAG.exec(token) !== null) {
-      flags.push(token.split(1)[0]);
+      flags.push([token[1], token.slice(2)]);
     } else {
       // all flags must be at the beginning
       firstNonflagIndex = index;
