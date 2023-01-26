@@ -29,7 +29,7 @@ const COMMANDS = {
   },
   aitext: {
     func: aitext,
-    help: 'Queries openai for some text. Flag temperature (0-9) with -t. e.g.: `?aitext -t5 <prompt>`',
+    help: 'Queries openai for some text. Flag temperature (0-9) with -t and length (2-4000) with -l. e.g.: `?aitext -t5 -l200 <prompt>`',
   },
   deploy: {
     func: release,

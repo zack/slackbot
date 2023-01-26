@@ -44,7 +44,7 @@ const aitext = async ({
   app, body, flags, text, say,
 }) => {
   if (text.trim().length === 0) {
-    respondThreaded(say, body, 'Usage: `?aitext <prompt>`');
+    respondThreaded(say, body, 'Usage: `?aitext <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aitext -l300 -t5 <prompt>');
     return;
   }
 
