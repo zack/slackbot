@@ -32,9 +32,10 @@ A basic slackbot built on Node.
 1) Finish filling out `.env` with `SLACK_SIGNING_TOKEN` and `SLACK_BOT_TOKEN`.
 1) Grant the necessary permissions (see above) under "Scopes > Bot Token Scopes" at https://api.slack.com/apps/SOMETHING/oauth?
 1) Enable and subscribe to the appropriate events (see above) at https://api.slack.com/apps/SOMETHING/event-subscriptions?
-1) In the parent directory: `$ lt --port 3000 --subdomain yoursubdomainhere > lt.out &`
+1) Set up a custom Google Search Engine: https://github.com/abhi11210646/image-search-google#set-up-google-custom-search-engine
+1) Get the keys from your search engine and put them in your `.env` file
 1) Fill in the request URL as https://yoursubdomainhere.loca.lt/slack/events
-1) For development, run `$ npm run start`
+1) For development, run `$ npx nodemon --exec node --loader ts-node/esm src/app.ts`
 1) For production, first run `$npm run build` and then, if using pm2, run : `$ pm2 start ecosystem.config.js`
 1) If you're running multiple slackbots, rename each one with `$ pm2 restart <id> -n <newname>`.
 1) Your bot should now be able to respond to commands!

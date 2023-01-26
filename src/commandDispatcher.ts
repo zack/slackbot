@@ -9,6 +9,7 @@ import rebuild from './commands/rebuild';
 import release from './commands/release';
 import spell from './commands/spell';
 import spongecase from './commands/spongecase';
+import summon from './commands/summon';
 import version from './commands/version';
 
 import { respondDirectly } from './utils/respond';
@@ -71,6 +72,10 @@ const COMMANDS = {
   spongecase: {
     func: spongecase,
     help: 'Prints out the given text in sPoNgEcAsE.',
+  },
+  summon: {
+    func: summon,
+    help: 'Summon an image from google image search.',
   },
   unlearn: {
     func: unlearnCommand,

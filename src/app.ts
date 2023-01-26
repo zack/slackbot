@@ -2,13 +2,10 @@ import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-
 
 import { dispatchCommand, dispatchReaction } from './commandDispatcher';
 
+dotenv.config();
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { App } = require('@slack/bolt');
-
-if (process.env.NODE_ENV !== 'production') {
-  // use a .env file, but not in production!
-  dotenv.config();
-}
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
