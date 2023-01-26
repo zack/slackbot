@@ -38,7 +38,7 @@ A basic slackbot built on Node.
 1) Your bot should now be able to respond to commands!
 1) To deploy the latest version in production, send the command `?deploy`. Check what version is running with `?version`.
 
-# Apis
+# APIs
 ## Google
 The command ?summon uses google image search. In order to use this commands, you'll need to follow the instructions [here](https://github.com/abhi11210646/image-search-google) and then fill in the correct keys in `.env`.
 
