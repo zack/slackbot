@@ -2,7 +2,9 @@ import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn';
 import { plusCommand, plusEmoji, pluses } from './commands/plus';
+import { aiart, aitext } from './commands/openai';
 import emojibomb from './commands/emojibomb';
+import gif from './commands/gif';
 import github from './commands/github';
 import pong from './commands/ping';
 import rebuild from './commands/rebuild';
@@ -14,12 +16,20 @@ import version from './commands/version';
 
 import { respondDirectly } from './utils/respond';
 
-const RE_FLAG = /-\w/;
+const RE_FLAG = /-[a-zA-Z0-9]+/;
 
 const COMMANDS = {
   '++': {
     func: plusCommand,
     help: 'Give another use 1 plus. Alias of ?plus.',
+  },
+  aiart: {
+    func: aiart,
+    help: 'Queries openai for some art.',
+  },
+  aitext: {
+    func: aitext,
+    help: 'Queries openai for some text. Flag temperature (0-9) with -t. e.g.: `?aitext -t5 <prompt>`',
   },
   deploy: {
     func: release,
@@ -32,6 +42,10 @@ const COMMANDS = {
   emojibomb: {
     func: emojibomb,
     help: 'Try it.',
+  },
+  gif: {
+    func: gif,
+    help: 'Summons a random gif from giphy.',
   },
   gimme: {
     func: gimme,
@@ -106,7 +120,7 @@ const getParts = (context) => {
 
   for (const [index, token] of tokens.entries()) {
     if (RE_FLAG.exec(token) !== null) {
-      flags.push(token[1]);
+      flags.push(token.split(1)[0]);
     } else {
       // all flags must be at the beginning
       firstNonflagIndex = index;
