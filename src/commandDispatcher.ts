@@ -9,7 +9,7 @@ import github from './commands/github';
 import pong from './commands/ping';
 import rebuild from './commands/rebuild';
 import release from './commands/release';
-import spell from './commands/spell';
+import { bubble, scrabble } from './commands/spell';
 import spongecase from './commands/spongecase';
 import summon from './commands/summon';
 import version from './commands/version';
@@ -30,6 +30,10 @@ const COMMANDS = {
   aitext: {
     func: aiText,
     help: 'Queries openai for some text. Flag temperature (0-9) with -t and length (2-4000) with -l. e.g.: `?aitext -t5 -l200 <prompt>`',
+  },
+  bubble: {
+    func: bubble,
+    help: 'Spells out the arguments using white emoji text. Flag -y for yellow.',
   },
   deploy: {
     func: release,
@@ -79,9 +83,9 @@ const COMMANDS = {
     func: release,
     help: 'Fetches and deploys the most recent commit of this slackbot.',
   },
-  spell: {
-    func: spell,
-    help: 'Spells out the arguments using white emoji text. Flag -y for yellow.',
+  scrabble: {
+    func: scrabble,
+    help: 'Spells out the arguments using scrabble emoji text. Flag -y for yellow.',
   },
   spongecase: {
     func: spongecase,
