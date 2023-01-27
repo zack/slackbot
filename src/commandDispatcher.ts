@@ -16,7 +16,7 @@ import version from './commands/version';
 
 import { respondDirectly } from './utils/respond';
 
-const RE_FLAG = /-[a-zA-Z0-9]+/;
+const RE_FLAG = /^-[a-zA-Z0-9]+/;
 
 const COMMANDS = {
   '++': {

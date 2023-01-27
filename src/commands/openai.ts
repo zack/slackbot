@@ -83,6 +83,11 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
       name: 'art-loading',
       timestamp,
     });
+    app.client.reactions.add({
+      channel,
+      name: 'white_check_mark',
+      timestamp,
+    });
   }
 };
 
@@ -140,17 +145,17 @@ const aiText = async ({
     }
   }
 
-  const message = await app.client.chat.postMessage({
+  app.client.reactions.add({
     channel: body.event.channel,
-    temperature,
-    text: 'Working...',
-    thread_ts: body.event.thread_ts,
+    name: 'art-loading',
+    timestamp: body.event.ts,
   });
 
   try {
     const response = await OPENAI.createCompletion({
       max_tokens: maxTokens,
       model: 'text-davinci-003',
+      temperature,
       n: 1,
       prompt: text,
     });
@@ -159,9 +164,10 @@ const aiText = async ({
   } catch (e: any) {
     respond(say, body, `Error: ${e.response.data.error.message}`);
   } finally {
-    app.client.chat.delete({
+    app.client.reactions.remove({
       channel: body.event.channel,
-      ts: message.message.ts,
+      name: 'art-loading',
+      timestamp: body.event.ts,
     });
   }
 };
