@@ -60,3 +60,4 @@ The commands ?aitext and ?aiart use openai. In order to use these commands, you'
 # Emojis you will want
 1) The Slack bubble letters emoji pack
 1) The emojis in the `emojis` directory. Make sure you don't change the names.
+  1) I suggest using [Neutral Face Emoji Tools](https://chrome.google.com/webstore/detail/neutral-face-emoji-tools/anchoacphlfbdomdlomnbbfhcmcdmjej) for Chrome. Then you can just drag and drop them all in at once.
