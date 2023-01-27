@@ -1,44 +1,44 @@
 A basic slackbot built on Node.
 
 # Environment Requirements
-1) npm
-1) I recommend `pm2` with the `--watch` flag
+1. npm
+1. I recommend `pm2` with the `--watch` flag
 
 # Slack Permission and Requirements
 ## OAuth & Permissions > Scopes > Bot Token Scopes
-1) channels:history
-1) chat:write
-1) emoji:read
-1) files:read
-1) files:write
-1) groups:history
-1) im:history
-1) mpim:history
-1) reactions:read
-1) reactions:write
-1) users:read
+1. channels:history
+1. chat:write
+1. emoji:read
+1. files:read
+1. files:write
+1. groups:history
+1. im:history
+1. mpim:history
+1. reactions:read
+1. reactions:write
+1. users:read
 
 ## Event Subscriptions > Subscribe to bot events
-1) message.channels
-1) message.groups
-1) message.im
-1) message.mpim
-1) reaction_added
+1. message.channels
+1. message.groups
+1. message.im
+1. message.mpim
+1. reaction_added
 
 # Setup
-1) Follow the instructions [here](https://slack.dev/bolt-python/tutorial/getting-started) to create and install a new app and get your secret tokens.
-1) Turn on socket mode at https://app.slack.com/app-settings/SOMETHING/SOMETHING_ELSE/socket-mode
-1) `$ cp .env.sample .env` and add the token you generated when you turn on socket mode to `.env` as `SOCKET_TOKEN`
-1) Create a directory for the bot and then run `git clone` from inside this directory. The parent repo will hold the databases and some logs.
-1) Inside the git repo: `$ npm install`
-1) Finish filling out `.env` with `SLACK_SIGNING_TOKEN` and `SLACK_BOT_TOKEN`.
-1) Grant the necessary permissions (see above) under "Scopes > Bot Token Scopes" at https://api.slack.com/apps/SOMETHING/oauth?
-1) Enable and subscribe to the appropriate events (see above) at https://api.slack.com/apps/SOMETHING/event-subscriptions?
-1) For development, run `$ npm start run`.
-1) For production, first run `$npm run build` and then, if using pm2, run : `$ pm2 start ecosystem.config.js`
-1) If you're running multiple slackbots, rename each one with `$ pm2 restart <id> -n <newname>`.
-1) Your bot should now be able to respond to commands!
-1) To deploy the latest version in production, send the command `?deploy`. Check what version is running with `?version`.
+1. Follow the instructions [here](https://slack.dev/bolt-python/tutorial/getting-started) to create and install a new app and get your secret tokens.
+1. Turn on socket mode at https://app.slack.com/app-settings/SOMETHING/SOMETHING_ELSE/socket-mode
+1. `$ cp .env.sample .env` and add the token you generated when you turn on socket mode to `.env` as `SOCKET_TOKEN`
+1. Create a directory for the bot and then run `git clone` from inside this directory. The parent repo will hold the databases and some logs.
+1. Inside the git repo: `$ npm install`
+1. Finish filling out `.env` with `SLACK_SIGNING_TOKEN` and `SLACK_BOT_TOKEN`.
+1. Grant the necessary permissions (see above) under "Scopes > Bot Token Scopes" at https://api.slack.com/apps/SOMETHING/oauth?
+1. Enable and subscribe to the appropriate events (see above) at https://api.slack.com/apps/SOMETHING/event-subscriptions?
+1. For development, run `$ npm start run`.
+1. For production, first run `$npm run build` and then, if using pm2, run : `$ pm2 start ecosystem.config.js`
+1. If you're running multiple slackbots, rename each one with `$ pm2 restart <id> -n <newname>`.
+1. Your bot should now be able to respond to commands!
+1. To deploy the latest version in production, send the command `?deploy`. Check what version is running with `?version`.
 
 # APIs
 You should delete the relevant lines from the `.env` file for any APIs you do not wish to use.
@@ -53,11 +53,11 @@ The command ?gif uses giphy. In order to use this commands, you'll need to creat
 The commands ?aitext and ?aiart use openai. In order to use these commands, you'll need to create an account at openai.com, generate an API key, and fill it in in `.env`.
 
 # Usage
-1) Commands are run using the ?command syntax.
-1) ?help for a list of commands
-1) There are also some (as of now undocumented) emoji interactions. Sorry!
+1. Commands are run using the ?command syntax.
+1. ?help for a list of commands
+1. There are also some (as of now undocumented) emoji interactions. Sorry!
 
 # Emojis you will want
-1) The Slack bubble letters emoji pack
-1) The emojis in the `emojis` directory. Make sure you don't change the names.
-  1) I suggest using [Neutral Face Emoji Tools](https://chrome.google.com/webstore/detail/neutral-face-emoji-tools/anchoacphlfbdomdlomnbbfhcmcdmjej) for Chrome. Then you can just drag and drop them all in at once.
+1. The Slack bubble letters emoji pack
+1. The emojis in the `emojis` directory. Make sure you don't change the names.
+    1. I suggest using [Neutral Face Emoji Tools](https://chrome.google.com/webstore/detail/neutral-face-emoji-tools/anchoacphlfbdomdlomnbbfhcmcdmjej) for Chrome. Then you can just drag and drop them all in at once.
