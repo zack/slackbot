@@ -41,9 +41,25 @@ const scrabble = ({
 }) => {
   const prefix = 'scrabble-';
   const blank = ':scrabble-blank:';
-  const specials = {};
+  const cleanText = text.replace(/&amp;/g, '&');
+  const specials = {
+    $: 'dollar',
+    '!': 'exclamation',
+    '"': 'quotes',
+    '#': 'hash',
+    '%': 'percent',
+    '&': 'and',
+    '(': 'left-paren',
+    ')': 'right-paren',
+    '*': 'star',
+    '-': 'hyphen',
+    '=': 'equals',
+    '?': 'question',
+    '@': 'at',
+    '^': 'carat',
+  };
 
-  spell(say, body, blank, specials, prefix, text);
+  spell(say, body, blank, specials, prefix, cleanText);
 };
 
 export { scrabble, bubble };
