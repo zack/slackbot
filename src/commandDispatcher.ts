@@ -2,7 +2,7 @@ import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn';
 import { plusCommand, plusEmoji, pluses } from './commands/plus';
-import { aiart, aitext } from './commands/openai';
+import { aiArtCommand, aiArtEmoji, aiText } from './commands/openai';
 import emojibomb from './commands/emojibomb';
 import gif from './commands/gif';
 import github from './commands/github';
@@ -24,11 +24,11 @@ const COMMANDS = {
     help: 'Give another use 1 plus. Alias of ?plus.',
   },
   aiart: {
-    func: aiart,
+    func: aiArtCommand,
     help: 'Queries openai for some art.',
   },
   aitext: {
-    func: aitext,
+    func: aiText,
     help: 'Queries openai for some text. Flag temperature (0-9) with -t and length (2-4000) with -l. e.g.: `?aitext -t5 -l200 <prompt>`',
   },
   deploy: {
@@ -102,6 +102,9 @@ const COMMANDS = {
 };
 
 const REACTIONS = {
+  aiart: {
+    func: aiArtEmoji,
+  },
   learn: {
     func: learnEmoji,
   },
