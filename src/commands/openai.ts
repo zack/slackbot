@@ -4,7 +4,7 @@ import https from 'https';
 import { Configuration, OpenAIApi } from 'openai';
 import { tmpdir } from 'os';
 
-import getTextFromBody from '../utils/getTextFromBody';
+import { getTextFromBody } from '../utils/getTextFromBody';
 import { respond, respondThreaded } from '../utils/respond';
 
 dotenv.config();

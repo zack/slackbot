@@ -1,4 +1,4 @@
-const getTextFromBody = async (app, body) => {
+const getReplies = async (app, body) => {
   const channel = body.event.item?.channel || body.event.channel;
   const timestamp = body.event.item?.ts || body.event.ts;
 
@@ -9,7 +9,23 @@ const getTextFromBody = async (app, body) => {
     ts: timestamp,
   });
 
+  return (replies);
+};
+
+const getTextFromBody = async (app, body) => {
+  const replies = await getReplies(app, body);
   return (replies.messages[0].text);
 };
 
-export default getTextFromBody;
+const getTextAndFileFromBody = async (app, body) => {
+  const replies = await getReplies(app, body);
+  const message = replies.messages[0];
+  let content = message.text;
+
+  if (message.upload) {
+    content = `${content} (${message.files[0].url_private})`;
+  }
+  return content;
+};
+
+export { getTextFromBody, getTextAndFileFromBody };

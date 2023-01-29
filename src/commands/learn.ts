@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 
-import getTextFromBody from '../utils/getTextFromBody';
+import { getTextAndFileFromBody } from '../utils/getTextFromBody';
 import sample from '../utils/sample';
 import { respond, respondThreaded } from '../utils/respond';
 
@@ -33,9 +33,13 @@ const gimme = async ({
 
 const learn = async (app, body, content, learnee, learner, learnerName, say) => {
   let out;
-  if (content.trim().length > 0) {
+  const hasFile = body.event.subtype === 'file_share';
+
+  if (content.trim().length > 0 || hasFile) {
+    const fullContent = hasFile ? `${content} (${body.event.files[0].url_private})` : content;
+
     try {
-      db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, content);
+      db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, fullContent);
 
       out = `Learned about ${learnee} (by ${learnerName})!`;
     } catch {
@@ -54,7 +58,8 @@ const getCommandData = async (app, body, text) => {
   const learnee = args[0];
   const learner = body.event.user;
   const learnerProfile = await app.client.users.info({ user: learner });
-  const learnerName = learnerProfile.user.profile.display_name;
+  const learnerName = learnerProfile.user.profile.display_name
+    || learnerProfile.user.profile.real_name;
 
   return {
     content,
@@ -100,11 +105,12 @@ const unlearnCommand = async ({
 };
 
 const getEmojiData = async (app, body) => {
-  const content = await getTextFromBody(app, body);
+  const content = await getTextAndFileFromBody(app, body);
   const learnee = `<@${body.event.item_user}>`;
   const learner = body.event.user;
   const learnerProfile = await app.client.users.info({ user: learner });
-  const learnerName = learnerProfile.user.profile.display_name;
+  const learnerName = learnerProfile.user.profile.display_name
+    || learnerProfile.user.profile.real_name;
 
   return {
     content,
