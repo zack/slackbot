@@ -1,4 +1,4 @@
-import apod from './commands/nasa';
+import { apod, curiousity } from './commands/nasa';
 import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn';
@@ -39,6 +39,10 @@ const COMMANDS = {
   bubble: {
     func: bubble,
     help: 'Spells out the arguments using white emoji text. Flag -y for yellow.',
+  },
+  curiousity: {
+    func: curiousity,
+    help: 'Gets a random image from curiousity rover. Pass it a date if you want. Defaults to today. e.g. `?curiousity 2022-05-30`',
   },
   deploy: {
     func: release,
