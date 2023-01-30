@@ -42,7 +42,7 @@ const COMMANDS = {
   },
   curiousity: {
     func: curiousity,
-    help: 'Gets a random image from curiousity rover. Pass it a date if you want. Defaults to today. e.g. `?curiousity 2022-05-30`',
+    help: 'Gets a random image from curiousity rover. Pass it a date if you want. Defaults to 2 months ago. e.g. `?curiousity 2022-05-30`',
   },
   deploy: {
     func: release,
