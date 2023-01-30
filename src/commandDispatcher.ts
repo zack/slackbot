@@ -12,6 +12,7 @@ import rebuild from './commands/rebuild';
 import release from './commands/release';
 import { bubble, scrabble } from './commands/spell';
 import spongecase from './commands/spongecase';
+import stock from './commands/stock';
 import summon from './commands/summon';
 import version from './commands/version';
 
@@ -99,6 +100,10 @@ const COMMANDS = {
   spongecase: {
     func: spongecase,
     help: 'Prints out the given text in sPoNgEcAsE.',
+  },
+  stock: {
+    func: stock,
+    help: 'Get the current stock price. Usage: `?stock IBM`',
   },
   summon: {
     func: summon,
