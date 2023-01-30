@@ -1,3 +1,4 @@
+import apod from './commands/nasa';
 import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn';
@@ -30,6 +31,10 @@ const COMMANDS = {
   aitext: {
     func: aiText,
     help: 'Queries openai for some text. Flag temperature (0-9) with -t and length (2-4000) with -l. e.g.: `?aitext -t5 -l200 <prompt>`',
+  },
+  apod: {
+    func: apod,
+    help: 'Gets the Astronomy Photo of the Day from NASA Open API. Pass it a date if you want. Defaults to today. e.g. `?apod 2022-05-30`',
   },
   bubble: {
     func: bubble,
