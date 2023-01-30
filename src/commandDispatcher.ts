@@ -13,6 +13,7 @@ import release from './commands/release';
 import { bubble, scrabble } from './commands/spell';
 import spongecase from './commands/spongecase';
 import stock from './commands/stock';
+import ts from './commands/ts';
 import summon from './commands/summon';
 import version from './commands/version';
 
@@ -108,6 +109,10 @@ const COMMANDS = {
   summon: {
     func: summon,
     help: 'Summon an image from google image search.',
+  },
+  ts: {
+    func: ts,
+    help: 'Get the current timestamp as seconds from epoch. Flag `-m` for milliseconds.',
   },
   unlearn: {
     func: unlearnCommand,
