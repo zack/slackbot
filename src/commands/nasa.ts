@@ -24,6 +24,7 @@ const apod = async ({ body, say, text }) => {
 
   if (response.status !== 200) {
     respondThreaded(say, body, 'Bad request.');
+    return;
   }
 
   const {
