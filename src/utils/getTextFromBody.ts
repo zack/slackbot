@@ -22,9 +22,10 @@ const getTextAndFileFromBody = async (app, body) => {
   const message = replies.messages[0];
   let content = message.text;
 
-  if (message.upload) {
-    content = `${content} (${message.files[0].url_private})`;
+  if (message.files?.length > 0) {
+    content = `${content} (<${message.files[0].url_private}|file>)`;
   }
+
   return content;
 };
 

@@ -13,6 +13,11 @@ db.exec(`CREATE TABLE IF NOT EXISTS learns(
                 ts DATETIME DEFAULT CURRENT_TIMESTAMP,
                 unique(learnee, content))`);
 
+const getLearnerName = async (app, user) => {
+  const learnerProfile = await app.client.users.info({ user });
+  return learnerProfile.user.profile.display_name || learnerProfile.user.profile.real_name;
+};
+
 const gimme = async ({
   body, say, text,
 }) => {
@@ -33,13 +38,10 @@ const gimme = async ({
 
 const learn = async (app, body, content, learnee, learner, learnerName, say) => {
   let out;
-  const hasFile = body.event.subtype === 'file_share';
 
-  if (content.trim().length > 0 || hasFile) {
-    const fullContent = hasFile ? `${content} (${body.event.files[0].url_private})` : content;
-
+  if (content.trim().length > 0) {
     try {
-      db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, fullContent);
+      db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, content);
 
       out = `Learned about ${learnee} (by ${learnerName})!`;
     } catch {
@@ -54,12 +56,15 @@ const learn = async (app, body, content, learnee, learner, learnerName, say) => 
 
 const getCommandData = async (app, body, text) => {
   const args = text.split(' ');
-  const content = args.slice(1).join(' ');
   const learnee = args[0];
   const learner = body.event.user;
-  const learnerProfile = await app.client.users.info({ user: learner });
-  const learnerName = learnerProfile.user.profile.display_name
-    || learnerProfile.user.profile.real_name;
+  const learnerName = await getLearnerName(app, learner);
+
+  let content = args.slice(1).join(' ');
+
+  if (body.event.files?.length > 0) {
+    content = `${content} (<${body.event.files[0].url_private}|file>)`;
+  }
 
   return {
     content,
@@ -108,9 +113,7 @@ const getEmojiData = async (app, body) => {
   const content = await getTextAndFileFromBody(app, body);
   const learnee = `<@${body.event.item_user}>`;
   const learner = body.event.user;
-  const learnerProfile = await app.client.users.info({ user: learner });
-  const learnerName = learnerProfile.user.profile.display_name
-    || learnerProfile.user.profile.real_name;
+  const learnerName = await getLearnerName(app, learner);
 
   return {
     content,

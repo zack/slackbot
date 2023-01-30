@@ -141,7 +141,7 @@ const getParts = (context) => {
 };
 
 const dispatchCommand = (app, body, context, say) => {
-  const command = context.matches[1].split(' ')[0];
+  const command = context.matches[1].split(' ')[0].toLowerCase();
 
   const { flags, text } = getParts(context);
 
