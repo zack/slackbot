@@ -10,8 +10,8 @@ dotenv.config();
 
 let ENABLED = true;
 const APOD_URL = 'https://api.nasa.gov/planetary/apod?';
-const CURIOUSITY_URL = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?';
-const CURIOUSITY_SOL_ZERO = new Date('2012-08-06');
+const CURIOSITY_URL = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?';
+const CURIOSITY_SOL_ZERO = new Date('2012-08-06');
 
 if (process.env.NASA_API_KEY === undefined || process.env.NASA_API_KEY === '') {
   ENABLED = false;
@@ -47,7 +47,7 @@ const apod = async ({ body, say, text }) => {
   `);
 };
 
-const curiousity = async ({ body, say, text }) => {
+const curiosity = async ({ body, say, text }) => {
   if (!ENABLED) {
     respondThreaded(say, body, 'This command is not enabled. Likely, no valid API key was provided in `.env`.');
     return;
@@ -66,8 +66,8 @@ const curiousity = async ({ body, say, text }) => {
     return;
   }
 
-  if (dateIsBefore(date, CURIOUSITY_SOL_ZERO)) {
-    respondThreaded(say, body, 'Date too early. Curiousity landed on 2012-08-06');
+  if (dateIsBefore(date, CURIOSITY_SOL_ZERO)) {
+    respondThreaded(say, body, 'Date too early. Curiosity landed on 2012-08-06');
     return;
   }
 
@@ -76,7 +76,7 @@ const curiousity = async ({ body, say, text }) => {
     return;
   }
 
-  const response = await fetch(CURIOUSITY_URL + new URLSearchParams({
+  const response = await fetch(CURIOSITY_URL + new URLSearchParams({
     api_key: process.env.NASA_API_KEY || '',
     earth_date: earthDate,
   }));
@@ -103,4 +103,4 @@ const curiousity = async ({ body, say, text }) => {
   `);
 };
 
-export { apod, curiousity };
+export { apod, curiosity };
