@@ -21,12 +21,16 @@ const getLearnerName = async (app, user) => {
 const gimme = async ({
   body, say, text,
 }) => {
-  const learnee = text;
+  const learnee = text.split(' ')[0];
+  const index = parseInt(text.split(' ')[1], 10);
 
   const learns = db.prepare('SELECT content, ts FROM learns WHERE learnee = ?').all(learnee);
 
   let out;
-  if (learns.length > 0) {
+  if (learns.length > 0 && !Number.isNaN(index) && index > 0 && index <= learns.length) {
+    const { content } = learns[index - 1];
+    out = content;
+  } else if (learns.length > 0) {
     const { content } = sample(learns);
     out = content;
   } else {

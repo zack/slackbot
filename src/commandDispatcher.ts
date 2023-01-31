@@ -64,7 +64,7 @@ const COMMANDS = {
   },
   gimme: {
     func: gimme,
-    help: 'Fetches a random message learned about a user.',
+    help: 'Fetches a random message learned about a user. Pass a number to get a specific learn. E.g. `?gimme @zack 1`',
   },
   github: {
     func: github,
@@ -182,7 +182,7 @@ const dispatchCommand = (app, body, context, say) => {
     respondDirectly(app, body, out);
   } else {
     COMMANDS.gimme.func({
-      body, say, text: command,
+      body, say, text: `${command} ${text}`,
     });
   }
 };
