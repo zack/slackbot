@@ -1,4 +1,5 @@
 import { apod, curiosity } from './commands/nasa';
+import deleteThis from './commands/deleteThis';
 import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn';
@@ -127,6 +128,9 @@ const COMMANDS = {
 const REACTIONS = {
   aiart: {
     func: aiArtEmoji,
+  },
+  'delete-this': {
+    func: deleteThis,
   },
   learn: {
     func: learnEmoji,
