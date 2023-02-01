@@ -141,7 +141,7 @@ const aiText = async ({
     if (flag[0] === 'l') {
       maxTokens = Math.max(Math.min(parseInt(flag[1], 10), 4000), 2);
     } else if (flag[0] === 't') {
-      temperature = Math.max(Math.min(parseInt(flag[1], 10), 9), 0);
+      temperature = Math.max(Math.min(parseFloat(flag[1]), 2), 0);
     }
   }
 
