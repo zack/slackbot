@@ -11,6 +11,7 @@ import github from './commands/github';
 import pong from './commands/ping';
 import rebuild from './commands/rebuild';
 import release from './commands/release';
+import rocket from './commands/rocket';
 import { bubble, scrabble } from './commands/spell';
 import spongecase from './commands/spongecase';
 import stock from './commands/stock';
@@ -50,6 +51,10 @@ const COMMANDS = {
   deploy: {
     func: release,
     help: 'Fetches and deploys the most recent commit of this slackbot. Alias of ?release.',
+  },
+  rocket: {
+    func: rocket,
+    help: 'Prints a very large rocket.',
   },
   emojime: {
     func: pong,
