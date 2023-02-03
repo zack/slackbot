@@ -4,7 +4,9 @@ import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn';
 import { plusCommand, plusEmoji, pluses } from './commands/plus';
-import { aiArtCommand, aiArtEmoji, aiText } from './commands/openai';
+import {
+  aiArtCommand, aiArtEmoji, aiCost, aiText,
+} from './commands/openai';
 import emojibomb from './commands/emojibomb';
 import gif from './commands/gif';
 import github from './commands/github';
@@ -31,6 +33,10 @@ const COMMANDS = {
   aiart: {
     func: aiArtCommand,
     help: 'Queries openai for some art.',
+  },
+  aicost: {
+    func: aiCost,
+    help: 'Returns spending data for AI tools.',
   },
   aitext: {
     func: aiText,
