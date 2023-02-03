@@ -202,8 +202,12 @@ const aiText = async ({
 };
 
 const getCostFromRequestsForCommand = (requests, cmd) => {
+  if (requests.length === 0) {
+    return '_no data_';
+  }
+
   const func = (memo, { command, cost }) => memo + (command === cmd ? cost : 0);
-  return Math.round(requests.reduce(func, 0) * 100) / 100;
+  return `$${Math.round(requests.reduce(func, 0) * 100) / 100}`;
 };
 
 const aiCost = ({ body, say }) => {
@@ -228,12 +232,12 @@ const aiCost = ({ body, say }) => {
   const allTimeArtSum = getCostFromRequestsForCommand(allTimeRequests, 'aiart');
 
   const out = `
-*${thisMonthName}* \`?aiart\` cost: $${thisMonthArtSum}
-*${thisMonthName}* \`?aitext\` cost: $${thisMonthTextSum}
-*${lastMonthName}* \`?aiart\` cost: $${lastMonthArtSum}
-*${lastMonthName}* \`?aitext\` cost: $${lastMonthTextSum}
-*All Time* \`?aiart\` cost: $${allTimeArtSum}
-*All Time* \`?aitext\` cost: $${allTimeTextSum}`;
+*${thisMonthName}* \`?aiart\` cost: ${thisMonthArtSum}
+*${thisMonthName}* \`?aitext\` cost: ${thisMonthTextSum}
+*${lastMonthName}* \`?aiart\` cost: ${lastMonthArtSum}
+*${lastMonthName}* \`?aitext\` cost: ${lastMonthTextSum}
+*All Time* \`?aiart\` cost: ${allTimeArtSum}
+*All Time* \`?aitext\` cost: ${allTimeTextSum}`;
 
   respond(say, body, out);
 };
