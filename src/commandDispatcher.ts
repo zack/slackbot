@@ -15,7 +15,7 @@ import rebuild from './commands/rebuild';
 import release from './commands/release';
 import rocket from './commands/rocket';
 import { bubble, scrabble } from './commands/spell';
-import spongecase from './commands/spongecase';
+import { randcase, spongecase } from './commands/spongecase';
 import stock from './commands/stock';
 import ts from './commands/ts';
 import summon from './commands/summon';
@@ -97,6 +97,10 @@ const COMMANDS = {
   pluses: {
     func: pluses,
     help: "Checks a user's plus count",
+  },
+  randcase: {
+    func: randcase,
+    help: 'Prints out the given text in sPoNgEcAsE, but randomly.',
   },
   rebuild: {
     func: rebuild,
