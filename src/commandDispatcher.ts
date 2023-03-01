@@ -5,7 +5,7 @@ import {
 } from './commands/learn';
 import { plusCommand, plusEmoji, pluses } from './commands/plus';
 import {
-  aiArtCommand, aiArtEmoji, aiCost, aiText,
+  aiArtCommand, aiArtEmoji, aiChat, aiCost, aiText,
 } from './commands/openai';
 import emojibomb from './commands/emojibomb';
 import gif from './commands/gif';
@@ -33,6 +33,10 @@ const COMMANDS = {
   aiart: {
     func: aiArtCommand,
     help: 'Queries openai for some art.',
+  },
+  aichat: {
+    func: aiChat,
+    help: 'Sends a chat message to OpenAI\'s ChatGPT. Flag temperature (float, 0-2) with -t and length (2-4000) with -l. e.g.: `?aitext -t1.1 -l200 <prompt>`',
   },
   aicost: {
     func: aiCost,

@@ -23,7 +23,8 @@ let ENABLED = false;
 let OPENAI;
 const TMP_DIR = tmpdir();
 
-const TEXT_COST_PER_TOKEN = 0.00002; // $USD using Davinci https://openai.com/api/pricing/
+const TEXT_COST_PER_TOKEN = 0.00002; // $USD using Davinci https://openai.com/pricing/
+const CHAT_COST_PER_TOKEN = 0.000002; // $USD using gpt-3.5-turbo https://openai.com/pricing/
 const COST_PER_IMAGE = 0.02; // $USD using DALL-E @ 1024x1024
 const DALL_E_RESOLUTION = '1024x1024';
 
@@ -55,6 +56,8 @@ const logRequest = (command, tokens) => {
 
   if (command === 'aiart') {
     cost = COST_PER_IMAGE;
+  } else if (command === 'aichat') {
+    cost = tokens * CHAT_COST_PER_TOKEN;
   } else {
     cost = tokens * TEXT_COST_PER_TOKEN;
   }
@@ -149,6 +152,58 @@ const aiArtEmoji = async ({
   aiArt(app, body, channel, text, threadTs, timestamp, say);
 };
 
+const aiChat = async ({
+  app, body, flags, text, say,
+}) => {
+  if (!ENABLED) {
+    respondThreaded(say, body, 'This command is not enabled. Likely, no valid API key was provided.');
+    return;
+  }
+
+  if (text.trim().length === 0) {
+    respondThreaded(say, body, 'Usage: `?aichat <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aitext -l300 -t5 <prompt>');
+    return;
+  }
+
+  let temperature = 0;
+  let maxTokens = 32;
+
+  for (const flag of flags) {
+    if (flag[0] === 'l') {
+      maxTokens = Math.max(Math.min(parseInt(flag[1], 10), 4000), 2);
+    } else if (flag[0] === 't') {
+      temperature = Math.max(Math.min(parseFloat(flag[1]), 2), 0);
+    }
+  }
+
+  app.client.reactions.add({
+    channel: body.event.channel,
+    name: 'art-loading',
+    timestamp: body.event.ts,
+  });
+
+  try {
+    const response = await OPENAI.createChatCompletion({
+      max_tokens: maxTokens,
+      model: 'gpt-3.5-turbo',
+      temperature,
+      n: 1,
+      messages: [{ role: 'user', content: text }],
+    });
+    respond(say, body, `${response.data.choices[0].message.content}`);
+    logRequest('aichat', response.data.usage.total_tokens);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    respond(say, body, `Error: ${e.response.data.error.message}`);
+  } finally {
+    app.client.reactions.remove({
+      channel: body.event.channel,
+      name: 'art-loading',
+      timestamp: body.event.ts,
+    });
+  }
+};
+
 const aiText = async ({
   app, body, flags, text, say,
 }) => {
@@ -217,6 +272,7 @@ const aiCost = ({ body, say }) => {
   const thisMonthRequests = db.prepare('SELECT command, cost FROM openai WHERE ts > ?').all(startOfThisMonth);
   const thisMonthTextSum = getCostFromRequestsForCommand(thisMonthRequests, 'aitext');
   const thisMonthArtSum = getCostFromRequestsForCommand(thisMonthRequests, 'aiart');
+  const thisMonthChatSum = getCostFromRequestsForCommand(thisMonthRequests, 'aichat');
   const thisMonthName = formatDate(now, 'MMMM');
 
   const lastMonth = subtractDate(now, { months: 1 });
@@ -225,23 +281,30 @@ const aiCost = ({ body, say }) => {
   const lastMonthRequests = db.prepare('SELECT command, cost FROM openai WHERE ts > ? AND ts < ?').all(startOfLastMonth, startOfThisMonth);
   const lastMonthTextSum = getCostFromRequestsForCommand(lastMonthRequests, 'aitext');
   const lastMonthArtSum = getCostFromRequestsForCommand(lastMonthRequests, 'aiart');
+  const lastMonthChatSum = getCostFromRequestsForCommand(lastMonthRequests, 'aichat');
   const lastMonthName = formatDate(lastMonth, 'MMMM');
 
   const allTimeRequests = db.prepare('SELECT command, cost FROM openai').all();
   const allTimeTextSum = getCostFromRequestsForCommand(allTimeRequests, 'aitext');
   const allTimeArtSum = getCostFromRequestsForCommand(allTimeRequests, 'aiart');
+  const allTimeChatSum = getCostFromRequestsForCommand(allTimeRequests, 'aichat');
 
   const out = `
 *${thisMonthName}* \`?aiart\` cost: ${thisMonthArtSum}
+*${thisMonthName}* \`?aichat\` cost: ${thisMonthChatSum}
 *${thisMonthName}* \`?aitext\` cost: ${thisMonthTextSum}
+
 *${lastMonthName}* \`?aiart\` cost: ${lastMonthArtSum}
+*${lastMonthName}* \`?aichat\` cost: ${lastMonthChatSum}
 *${lastMonthName}* \`?aitext\` cost: ${lastMonthTextSum}
+
 *All Time* \`?aiart\` cost: ${allTimeArtSum}
+*All Time* \`?aichat\` cost: ${allTimeChatSum}
 *All Time* \`?aitext\` cost: ${allTimeTextSum}`;
 
   respond(say, body, out);
 };
 
 export {
-  aiArtCommand, aiArtEmoji, aiCost, aiText,
+  aiArtCommand, aiArtEmoji, aiChat, aiCost, aiText,
 };
