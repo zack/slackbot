@@ -35,7 +35,7 @@ const plus = async (app, body, note, plusee, pluser, say) => {
     const { pluses } = db.prepare('SELECT count(*) as pluses FROM pluses WHERE plusee = ?').get(plusee);
 
     const forNote = note.length > 0 ? `for *${note}*` : '';
-    out = `${pluserName} has plussed <@${plusee}> ${forNote}. <@${plusee}> now has *${pluses} pluses*!`;
+    out = `${pluserName} has plussed <@${plusee}> ${forNote}. <@${plusee}> now has *${pluses} ${pluses === 1 ? 'plus' : 'pluses'}*!`;
   }
 
   respondThreaded(say, body, out);
@@ -81,7 +81,7 @@ const pluses = async ({
 
   const { plusCount } = db.prepare('SELECT count(*) as plusCount FROM pluses WHERE plusee = ?').get(plusee);
 
-  const out = `<@${plusee}> has *${plusCount} pluses*!`;
+  const out = `<@${plusee}> has *${plusCount} ${plusCount === 1 ? 'plus' : 'pluses'}*!`;
 
   respond(say, body, out);
 };
