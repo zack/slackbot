@@ -18,6 +18,9 @@ A basic slackbot built on Node.
 1. reactions:write
 1. users:read
 
+## OAuth & Permissions > Scopes > User Token Scopes
+1. channels:write
+
 ## Event Subscriptions > Subscribe to bot events
 1. message.channels
 1. message.groups
@@ -32,6 +35,7 @@ A basic slackbot built on Node.
 1. Create a directory for the bot and then run `git clone` from inside this directory. The parent repo will hold the databases and some logs.
 1. Inside the git repo: `$ npm install`
 1. Finish filling out `.env` with `SLACK_SIGNING_TOKEN` and `SLACK_BOT_TOKEN`.
+1. You can also add the `SLACK_USER_TOKEN` if you want to use the feature for incrementing a channel name (you probably don't).
 1. Grant the necessary permissions (see above) under "Scopes > Bot Token Scopes" at https://api.slack.com/apps/SOMETHING/oauth?
 1. Enable and subscribe to the appropriate events (see above) at https://api.slack.com/apps/SOMETHING/event-subscriptions?
 1. For development, run `$ npm start run`.

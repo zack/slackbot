@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 import { dispatchCommand, dispatchReaction } from './commandDispatcher';
+import incrementChannelName from './channelIncrementer';
 
 dotenv.config();
 
@@ -19,6 +20,11 @@ const app = new App({
 // Messages that start with ? are interpreted as commands
 app.message(/^\?(.*)/, async ({ body, context, say }) => {
   dispatchCommand(app, body, context, say);
+});
+
+const incrementerWords = (process.env.WORDS || '').split(',');
+app.message(new RegExp(`(${incrementerWords.join('|')})`, 'g'), async () => {
+  incrementChannelName(app, process.env.INCREMENTING_CHANNEL_ID, process.env.SLACK_USER_TOKEN);
 });
 
 app.event('reaction_added', async ({
