@@ -200,6 +200,7 @@ const dispatchCommand = (app, body, context, say) => {
 
     // Print out all commands and their help text, DMd to the user
     for (const cmd in COMMANDS) {
+      // This line is the linter
       if (Object.prototype.hasOwnProperty.call(COMMANDS, cmd)) {
         out += `\`${cmd}\`: ${COMMANDS[cmd].help}\n`;
       }
