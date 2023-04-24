@@ -166,11 +166,12 @@ const aiChat = async ({
   }
 
   let temperature = 0;
-  let maxTokens = 32;
+  let maxTokens = 2000;
 
   for (const flag of flags) {
     if (flag[0] === 'l') {
-      maxTokens = Math.max(Math.min(parseInt(flag[1], 10), 4000), 2);
+      const parsedFlagVal = parseInt(flag[1], 10) || maxTokens;
+      maxTokens = Math.max(Math.min(parsedFlagVal, 4000), 2);
     } else if (flag[0] === 't') {
       temperature = Math.max(Math.min(parseFloat(flag[1]), 2), 0);
     }
@@ -218,11 +219,12 @@ const aiText = async ({
   }
 
   let temperature = 0;
-  let maxTokens = 32;
+  let maxTokens = 2000;
 
   for (const flag of flags) {
     if (flag[0] === 'l') {
-      maxTokens = Math.max(Math.min(parseInt(flag[1], 10), 4000), 2);
+      const parsedFlagVal = parseInt(flag[1], 10) || maxTokens;
+      maxTokens = Math.max(Math.min(parsedFlagVal, 4000), 2);
     } else if (flag[0] === 't') {
       temperature = Math.max(Math.min(parseFloat(flag[1]), 2), 0);
     }
