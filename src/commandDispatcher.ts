@@ -196,7 +196,7 @@ const dispatchCommand = (app, body, context, say) => {
       app, body, context, flags, text, say,
     });
   } else if (command === 'help') {
-    let out = '';
+    let out = '*Note: Do not use spaces when specicifying flags. Good example: `?aichat -l32 what is love`*\n\n';
 
     // Print out all commands and their help text, DMd to the user
     for (const cmd in COMMANDS) {
