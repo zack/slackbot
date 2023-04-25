@@ -13,11 +13,20 @@ dotenv.config();
 
 const db = new Database('../openai.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
+
+// to keep track of costs
 db.exec(`CREATE TABLE IF NOT EXISTS openai(
                 command TEXT,
                 tokens INTEGER,
                 cost REAL,
                 ts INTEGER(4) NOT NULL DEFAULT (strftime('%s','now')))`);
+
+// for persistent gpt chats
+db.exec(`CREATE TABLE IF NOT EXISTS chats(
+                user TEXT,
+                content TEXT,
+                role INTEGER,
+                ts DATETIME DEFAULT CURRENT_TIMESTAMP)`);
 
 let ENABLED = false;
 let OPENAI;
@@ -152,6 +161,18 @@ const aiArtEmoji = async ({
   aiArt(app, body, channel, text, threadTs, timestamp, say);
 };
 
+const logMessage = (user, content, role) => {
+  db.prepare('INSERT INTO chats(user, content, role) values (?, ?, ?)').run(user, content, role);
+};
+
+const logOutgoingMessage = (user, content) => {
+  logMessage(user, content, 'user');
+};
+
+const logIncomingMessage = (user, content) => {
+  logMessage(user, content, 'assistant');
+};
+
 const aiChat = async ({
   app, body, flags, text, say,
 }) => {
@@ -165,6 +186,7 @@ const aiChat = async ({
     return;
   }
 
+  const { user } = body.event;
   let temperature = 0;
   let maxTokens = 2000;
 
@@ -174,6 +196,11 @@ const aiChat = async ({
       maxTokens = Math.max(Math.min(parsedFlagVal, 4000), 2);
     } else if (flag[0] === 't') {
       temperature = Math.max(Math.min(parseFloat(flag[1]), 2), 0);
+    } else if (flag[0] === 'r') {
+      db.prepare('DELETE FROM chats WHERE user = ?').run(user);
+      const out = `Chat history for <@${user}> cleared`;
+      respond(say, body, out);
+      return;
     }
   }
 
@@ -184,15 +211,23 @@ const aiChat = async ({
   });
 
   try {
+    const priorChats = db.prepare("SELECT content, role FROM chats WHERE user = ? AND ts >= Datetime('now', '-15 minutes')").all(user);
+    const messages = [...priorChats, { role: 'user', content: text }];
+    console.log(messages);
+
     const response = await OPENAI.createChatCompletion({
       max_tokens: maxTokens,
       model: 'gpt-3.5-turbo',
       temperature,
       n: 1,
-      messages: [{ role: 'user', content: text }],
+      messages,
     });
-    respond(say, body, `${response.data.choices[0].message.content}`);
+    const responseMessage = response.data.choices[0].message.content;
+
+    respond(say, body, responseMessage);
     logRequest('aichat', response.data.usage.total_tokens);
+    logOutgoingMessage(user, text);
+    logIncomingMessage(user, responseMessage);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     respond(say, body, `Error: ${e.response.data.error.message}`);

@@ -40,7 +40,7 @@ const COMMANDS = {
   },
   aichat: {
     func: aiChat,
-    help: 'Sends a chat message to OpenAI\'s ChatGPT. Flag temperature (float, 0-2) with -t and length (2-4000) with -l. e.g.: `?aitext -t1.1 -l200 <prompt>`',
+    help: 'Sends a chat message to OpenAI\'s ChatGPT. Flag temperature (float, 0-2) with -t and length (2-4000) with -l. e.g.: `?aitext -t1.1 -l200 <prompt>`. Flag -r to clear history. Otherwise, uses the last 15 minutes of chats as context.',
   },
   aicost: {
     func: aiCost,
