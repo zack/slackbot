@@ -213,7 +213,6 @@ const aiChat = async ({
   try {
     const priorChats = db.prepare("SELECT content, role FROM chats WHERE user = ? AND ts >= Datetime('now', '-15 minutes')").all(user);
     const messages = [...priorChats, { role: 'user', content: text }];
-    console.log(messages);
 
     const response = await OPENAI.createChatCompletion({
       max_tokens: maxTokens,
