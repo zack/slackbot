@@ -14,7 +14,7 @@ import pong from './commands/ping';
 import rebuild from './commands/rebuild';
 import release from './commands/release';
 import rocket from './commands/rocket';
-import { bubble, scrabble } from './commands/spell';
+import { bubble, scrabble, meow } from './commands/spell';
 import { randcase, spongecase } from './commands/spongecase';
 import stock from './commands/stock';
 import ts from './commands/ts';
@@ -93,6 +93,10 @@ const COMMANDS = {
   learn: {
     func: learnCommand,
     help: 'Records a message or statement to be associated with a user.',
+  },
+  meow: {
+    func: meow,
+    help: 'Spells out the arguments using meow emoji text.',
   },
   ping: {
     func: pong,

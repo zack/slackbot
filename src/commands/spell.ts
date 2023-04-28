@@ -1,14 +1,16 @@
 import { respond } from '../utils/respond';
 
 const RE_ALPHA = /[a-zA-Z]/;
+const RE_ALPHANUMERIC = /[a-zA-Z0-9]/;
 
 // TODO: CHECK IF THE CORRECT EMOJIS ARE INSTALLED!
 
-const spell = (say, body, blank, specials, prefix, text) => {
+const spell = (say, body, blank, specials, prefix, text, numeric) => {
   let out = '';
+  const re = numeric ? RE_ALPHANUMERIC : RE_ALPHA;
 
   for (const character of text) {
-    if (RE_ALPHA.exec(character) !== null) {
+    if (re.exec(character) !== null) {
       out += `:${prefix}${character}:`;
     } else if (character === ' ') {
       out += blank;
@@ -22,6 +24,19 @@ const spell = (say, body, blank, specials, prefix, text) => {
   respond(say, body, out);
 };
 
+const meow = ({
+  body, flags, text, say,
+}) => {
+  const prefix = 'meow-';
+  const blank = ':spacer:';
+  const specials = {
+    '?': 'question-mark',
+    '!': 'exclamation-mark',
+  };
+
+  spell(say, body, blank, specials, prefix, text, true);
+};
+
 const bubble = ({
   body, flags, text, say,
 }) => {
@@ -33,7 +48,7 @@ const bubble = ({
     '!': 'exclamation',
   };
 
-  spell(say, body, blank, specials, prefix, text);
+  spell(say, body, blank, specials, prefix, text, false);
 };
 
 const scrabble = ({
@@ -59,7 +74,7 @@ const scrabble = ({
     '^': 'carat',
   };
 
-  spell(say, body, blank, specials, prefix, cleanText);
+  spell(say, body, blank, specials, prefix, cleanText, false);
 };
 
-export { scrabble, bubble };
+export { scrabble, bubble, meow };
