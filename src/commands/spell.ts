@@ -25,7 +25,7 @@ const spell = (say, body, blank, specials, prefix, text, numeric) => {
 };
 
 const meow = ({
-  body, flags, text, say,
+  body, text, say,
 }) => {
   const prefix = 'meow-';
   const blank = ':spacer:';

@@ -18,7 +18,7 @@ const app = new App({
 });
 
 // Messages that start with ? are interpreted as commands
-app.message(/^\?(.*)/, async ({ body, context, say }) => {
+app.message(/^\?([^ ].*)/, async ({ body, context, say }) => {
   dispatchCommand(app, body, context, say);
 });
 
