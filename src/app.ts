@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 import { dispatchCommand, dispatchReaction } from './commandDispatcher';
+import announceEmojiChange from './emojiChanges';
 import incrementChannelName from './channelIncrementer';
 
 dotenv.config();
@@ -27,11 +28,13 @@ app.message(new RegExp(`(${incrementerWords.join('|')})`, 'g'), async () => {
   incrementChannelName(app, process.env.INCREMENTING_CHANNEL_ID, process.env.SLACK_USER_TOKEN);
 });
 
-app.event('reaction_added', async ({
-  body, context, say,
-}) => {
+app.event('reaction_added', async ({ body, context, say }) => {
   const { reaction } = body.event;
   dispatchReaction(app, body, context, reaction, say);
+});
+
+app.event('emoji_changed', async ({ body }) => {
+  announceEmojiChange(app, body, process.env.EMOJI_CHANNEL_ID);
 });
 
 (async () => {

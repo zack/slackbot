@@ -22,6 +22,7 @@ A basic slackbot built on Node.
 1. channels:write
 
 ## Event Subscriptions > Subscribe to bot events
+1. emoji_changed
 1. message.channels
 1. message.groups
 1. message.im
