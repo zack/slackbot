@@ -8,6 +8,7 @@ import {
   aiArtCommand, aiArtEmoji, aiChat, aiCost, aiText,
 } from './commands/openai';
 import emojibomb from './commands/emojibomb';
+import gotem from './commands/gotem';
 import gif from './commands/gif';
 import github from './commands/github';
 import pong from './commands/ping';
@@ -158,6 +159,9 @@ const REACTIONS = {
   },
   'delete-this': {
     func: deleteThis,
+  },
+  gotem: {
+    func: gotem,
   },
   learn: {
     func: learnEmoji,
