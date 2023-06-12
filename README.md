@@ -34,7 +34,7 @@ A basic slackbot built on Node.
 1. Turn on socket mode at https://app.slack.com/app-settings/SOMETHING/SOMETHING_ELSE/socket-mode
 1. `$ cp .env.sample .env` and add the token you generated when you turn on socket mode to `.env` as `SOCKET_TOKEN`
 1. Create a directory for the bot and then run `git clone` from inside this directory. The parent repo will hold the databases and some logs.
-1. Inside the git repo: `$ npm install`
+1. Inside the git repo: `$ npm ci`
 1. Finish filling out `.env` with `SLACK_SIGNING_TOKEN` and `SLACK_BOT_TOKEN`.
 1. You can also add the `SLACK_USER_TOKEN` if you want to use the feature for incrementing a channel name (you probably don't).
 1. Grant the necessary permissions (see above) under "Scopes > Bot Token Scopes" at https://api.slack.com/apps/SOMETHING/oauth?
