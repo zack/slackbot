@@ -160,6 +160,9 @@ const REACTIONS = {
   'delete-this': {
     func: deleteThis,
   },
+  'flex-plus': {
+    func: plusEmoji,
+  },
   gotem: {
     func: gotem,
   },
