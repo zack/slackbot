@@ -20,7 +20,7 @@ const getNote = (args) => {
 
 const plus = async (app, body, note, plusee, pluser, say) => {
   if (!(await verifyUser(app, plusee))) {
-    respondThreaded(say, body, "Sorry, I don't know who that is.");
+    respondThreaded(say, body, `Sorry, I don't know who *${plusee}* is.`);
     return;
   }
 
@@ -50,7 +50,7 @@ const multiPlus = async ({
 
   plusees.forEach(async (plusee) => {
     if (!(await verifyUser(app, plusee))) {
-      respondThreaded(say, body, `Sorry, I don't know who ${plusee} is.`);
+      respondThreaded(say, body, `Sorry, I don't know who *${plusee}* is.`);
       return;
     }
 
@@ -66,7 +66,7 @@ const plusCommand = async ({
   const pluser = body.event.user;
 
   if (!(await verifyUser(app, plusee))) {
-    respondThreaded(say, body, "Sorry, I don't know who that is.");
+    respondThreaded(say, body, `Sorry, I don't know who *${plusee}* is.`);
     return;
   }
 
@@ -92,7 +92,7 @@ const pluses = async ({
   const plusee = cleanUser(args[0]);
 
   if (!(await verifyUser(app, plusee))) {
-    respondThreaded(say, body, "Sorry, I don't know who that is.");
+    respondThreaded(say, body, `Sorry, I don't know who ${plusee} is.`);
     return;
   }
 
