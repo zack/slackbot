@@ -41,6 +41,23 @@ const plus = async (app, body, note, plusee, pluser, say) => {
   respondThreaded(say, body, out);
 };
 
+const multiPlus = async ({
+  app, body, text, say,
+}) => {
+  const args = text.split(' ');
+  const plusees = args.map(cleanUser);
+  const pluser = body.event.user;
+
+  plusees.forEach(async (plusee) => {
+    if (!(await verifyUser(app, plusee))) {
+      respondThreaded(say, body, `Sorry, I don't know who ${plusee} is.`);
+      return;
+    }
+
+    plus(app, body, '', plusee, pluser, say);
+  });
+};
+
 const plusCommand = async ({
   app, body, text, say,
 }) => {
@@ -86,4 +103,6 @@ const pluses = async ({
   respond(say, body, out);
 };
 
-export { plusCommand, plusEmoji, pluses };
+export {
+  multiPlus, plusCommand, plusEmoji, pluses,
+};

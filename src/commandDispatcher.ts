@@ -3,7 +3,9 @@ import deleteThis from './commands/deleteThis';
 import {
   gimme, learnCommand, learnEmoji, unlearnCommand, unlearnEmoji,
 } from './commands/learn';
-import { plusCommand, plusEmoji, pluses } from './commands/plus';
+import {
+  multiPlus, plusCommand, plusEmoji, pluses,
+} from './commands/plus';
 import {
   aiArtCommand, aiArtEmoji, aiChat, aiCost, aiText,
 } from './commands/openai';
@@ -94,6 +96,10 @@ const COMMANDS = {
   learn: {
     func: learnCommand,
     help: 'Records a message or statement to be associated with a user.',
+  },
+  'm++': {
+    func: multiPlus,
+    help: 'Give pluses to multiple users at once. Does not take a note argument.',
   },
   meow: {
     func: meow,
