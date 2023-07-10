@@ -2,3 +2,5 @@
 node_modules
 built
 slackbot.db
+*.db-wal
+*.db-shm
