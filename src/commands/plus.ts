@@ -4,7 +4,7 @@ import cleanUser from '../utils/cleanUser';
 import { respond, respondThreaded } from '../utils/respond';
 import verifyUser from '../utils/verifyUser';
 
-const db = new Database('../pluses.db');
+const db = new Database('./slackbot.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
 db.exec('CREATE TABLE IF NOT EXISTS pluses(plusee TEXT, pluser TEXT, note TEXT, ts DATETIME DEFAULT CURRENT_TIMESTAMP)');
 

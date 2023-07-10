@@ -4,7 +4,7 @@ import { getTextAndFileFromBody } from '../utils/getTextFromBody';
 import sample from '../utils/sample';
 import { respond, respondThreaded } from '../utils/respond';
 
-const db = new Database('../learns.db');
+const db = new Database('./slackbot.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
 db.exec(`CREATE TABLE IF NOT EXISTS learns(
                 learnee TEXT,

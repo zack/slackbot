@@ -11,7 +11,7 @@ import { respond, respondThreaded } from '../utils/respond';
 
 dotenv.config();
 
-const db = new Database('../openai.db');
+const db = new Database('./slackbot.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
 
 // to keep track of costs
