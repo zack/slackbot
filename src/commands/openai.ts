@@ -300,8 +300,6 @@ const getCostFromRequestsForCommand = (requests, cmd) => {
     return '_no data_';
   }
 
-  console.log(requests);
-
   const func = (memo, { command, cost }) => memo + (command === cmd ? cost : 0);
   return `$${Math.round(requests.reduce(func, 0) * 100) / 100}`;
 };

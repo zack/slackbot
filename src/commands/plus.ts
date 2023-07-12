@@ -97,8 +97,8 @@ const pluses = async ({
     return;
   }
 
-  const pluses = await Plus.findBy({ plusee });
-  const plusCount = pluses.length;
+  const plusesData = await Plus.findBy({ plusee });
+  const plusCount = plusesData.length;
 
   const out = `<@${plusee}> has *${plusCount} ${plusCount === 1 ? 'plus' : 'pluses'}*!`;
 
