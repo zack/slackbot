@@ -1,17 +1,7 @@
-import Database from 'better-sqlite3';
-
+import Learn from '../entity/Learn';
 import { getTextAndFileFromBody } from '../utils/getTextFromBody';
 import sample from '../utils/sample';
 import { respond, respondThreaded } from '../utils/respond';
-
-const db = new Database('./slackbot.db');
-db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
-db.exec(`CREATE TABLE IF NOT EXISTS learns(
-                learnee TEXT,
-                learner TEXT,
-                content TEXT,
-                ts DATETIME DEFAULT CURRENT_TIMESTAMP,
-                unique(learnee, content))`);
 
 const getLearnerName = async (app, user) => {
   const learnerProfile = await app.client.users.info({ user });
@@ -24,7 +14,7 @@ const gimme = async ({
   const learnee = text.split(' ')[0];
   const index = parseInt(text.split(' ')[1], 10);
 
-  const learns = db.prepare('SELECT content, ts FROM learns WHERE learnee = ?').all(learnee);
+  const learns = await Learn.findBy({ learnee });
 
   let out;
   if (learns.length > 0 && !Number.isNaN(index) && index > 0 && index <= learns.length) {
@@ -45,7 +35,11 @@ const learn = async (app, body, content, learnee, learner, learnerName, say) => 
 
   if (content.trim().length > 0) {
     try {
-      db.prepare('INSERT INTO learns(learnee, learner, content) values (?, ?, ?)').run(learnee, learner, content);
+      const newLearn = new Learn();
+      newLearn.learnee = learnee;
+      newLearn.learner = learner;
+      newLearn.content = content;
+      await newLearn.save();
 
       out = `Learned about ${learnee} (by ${learnerName})!`;
     } catch {
@@ -92,9 +86,9 @@ const learnCommand = async ({
 };
 
 const unlearn = async (app, body, content, learnee, unlearnerName, say) => {
-  const { changes } = db.prepare('DELETE FROM learns where learnee = ? and content = ?').run(learnee, content);
+  const deleteResult = await Learn.delete({ learnee, content });
 
-  const out = changes > 0
+  const out = deleteResult.affected && deleteResult.affected > 0
     ? `Unlearned about ${learnee} (by ${unlearnerName})!`
     : "I don't think I knew that. I certainly don't know it now.";
 
