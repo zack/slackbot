@@ -1,0 +1,48 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lightsail:GetContainerImages",
+                "lightsail:CreateContainerService",
+                "lightsail:CreateContainerServiceRegistryLogin",
+                "lightsail:GetContainerServices",
+                "lightsail:GetContainerServiceDeployments",
+                "lightsail:GetContainerServicePowers"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lightsail:CreateContainerServiceDeployment",
+                "lightsail:DeleteContainerService",
+                "lightsail:RegisterContainerImage",
+                "lightsail:UpdateContainerService"
+            ],
+            "Resource": "arn:aws:lightsail:{AWS_REGION}:{ACCOUNT_ID}:ContainerService/dev-usa-spending-bot-cs"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:DeleteItem",
+                "dynamodb:GetItem",
+                "dynamodb:PutItem"
+            ],
+            "Resource": "arn:aws:dynamodb:{AWS_REGION}:{ACCOUNT_ID}:table/usa-spending-bot-dynamo-lock"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::usa-spending-bot-tfstate",
+                "arn:aws:s3:::usa-spending-bot-tfstate/*"
+            ]
+        }
+    ]
+}
