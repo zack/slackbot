@@ -6,7 +6,7 @@ on:
 
 env:
   SERVICE_NAME: "slackbot"
-  ORG_NAME: "coforma"
+  ORG_NAME: "dhun9" # dockerhub username
   ENVIRONMENT: "dev"
 
 jobs:
