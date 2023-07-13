@@ -1,9 +1,8 @@
 name: build_and_deploy_service
 concurrency: "deploy"
 on:
-  release:
-    types:
-      - published
+  push:
+    branches: "main"
 
 env:
   SERVICE_NAME: "slackbot"
