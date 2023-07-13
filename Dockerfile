@@ -35,7 +35,7 @@ COPY db ./db
 
 RUN npm install --omit=dev
 
-COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/built ./built
 
 EXPOSE 3050
 
