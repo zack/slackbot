@@ -29,7 +29,7 @@ import { respondDirectly } from './utils/respond';
 const RE_FLAG = /^-[a-zA-Z0-9]+/;
 
 const COMMANDS = {
-  "+": {
+  '+': {
     func: plusCommand,
     help: 'Give another use 1 plus. Alias of ?plus.',
   },
