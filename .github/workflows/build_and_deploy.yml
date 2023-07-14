@@ -74,7 +74,7 @@ jobs:
 
       - name: Release to Amazon Lightsail
         env:
-          CONTAINER_SERVICE_NAME: dev-usa-spending-bot-cs
+          CONTAINER_SERVICE_NAME: cobot
         run: |
           echo "Releasing to Amazon Lightsail"
 
@@ -96,16 +96,29 @@ jobs:
               \"$CONTAINER_SERVICE_NAME\": {
                 \"image\": \"$IMAGE_TAG\",
                 \"environment\": {
+
                   \"NODE_ENV\": \"production\",
+                  \"PORT\": \"3050\",
+                  \"ORM_TYPE\": \"mysql\",
+
+                  \"DB_NAME\": \"${{ secrets.DB_NAME }}\",
                   \"DB_HOST\": \"${{ secrets.DB_HOST }}\",
                   \"DB_USER\": \"${{ secrets.DB_USER }}\",
                   \"DB_PASS\": \"${{ secrets.DB_PASS }}\",
                   \"DB_PORT\": \"${{ secrets.DB_PORT }}\",
-                  \"ORM_TYPE\": \"mysql\",
-                  \"DB_NAME\": \"${{ secrets.DB_NAME }}\",
-                  \"LOG_LEVEL\": \"info\",
+
                   \"SLACK_SIGNING_SECRET\": \"${{ secrets.SLACK_SIGNING_SECRET }}\",
-                  \"SLACK_BOT_TOKEN\": \"${{ secrets.SLACK_BOT_TOKEN }}\"
+                  \"SLACK_TOKEN\": \"${{ secrets.SLACK_TOKEN }}\",
+                  \"SLACK_BOT_TOKEN\": \"${{ secrets.SLACK_BOT_TOKEN }}\",
+
+                  \"FINNHUB_API_KEY\": \"${{ secrets.FINNHUB_API_KEY }}\",
+                  \"GIPHY_API_KEY\": \"${{ secrets.GIPHY_API_KEY }}\",
+                  \"GIPHY_RATING\": \"${{ secrets.GIPHY_RATING }}\",
+                  \"GOOGLE_SEARCH_API_KEY\": \"${{ secrets.GOOGLE_SEARCH_API_KEY }}\",
+                  \"NASA_API_KEY\": \"${{ secrets.NASA_API_KEY }}\",
+                  \"OPENAI_API_KEY\": \"${{ secrets.OPENAI_API_KEY }}\",
+                  \"SEARCH_ENGINE_ID\": \"${{ secrets.SEARCH_ENGINE_ID }}\",
+
                 },
                 \"ports\": {
                   \"3050\": \"HTTP\"
