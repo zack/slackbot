@@ -7,7 +7,6 @@ on:
 env:
   SERVICE_NAME: "slackbot"
   ORG_NAME: "dhun9" # dockerhub username
-  ENVIRONMENT: "dev"
 
 jobs:
   build-service:
@@ -82,6 +81,7 @@ jobs:
 
           # upload the docker image for this pipeline
           aws lightsail push-container-image \
+            --region ${{ secrets.AWS_REGION }} \
             --service-name $CONTAINER_SERVICE_NAME  \
             --label ${{ env.SERVICE_NAME }}-latest  \
             --image $ORG_NAME/$SERVICE_NAME:$GITHUB_SHA
