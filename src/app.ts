@@ -25,6 +25,17 @@ const { App } = require('@slack/bolt');
 // Initializes your app with your bot token and signing secret
 const app = new App({
   appToken: process.env.SOCKET_TOKEN,
+  customRoutes: [
+    {
+      path: '/ping',
+      method: 'GET',
+      handler: (req, res) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain');
+        res.end('pong');
+      }
+    }
+  ],
   ignoreSelf: false,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   socketMode: true,
