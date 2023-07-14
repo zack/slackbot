@@ -74,7 +74,7 @@ jobs:
 
       - name: Release to Amazon Lightsail
         env:
-          CONTAINER_SERVICE_NAME: ${{ env.ENVIRONMENT }}-${{ env.SERVICE_NAME }}-cs
+          CONTAINER_SERVICE_NAME: dev-usa-spending-bot-cs
         run: |
           echo "Releasing to Amazon Lightsail"
 
@@ -110,13 +110,5 @@ jobs:
                 \"ports\": {
                   \"3050\": \"HTTP\"
                 }
-              }
-            }" \
-            --public-endpoint "{
-              \"containerName\": \"$CONTAINER_SERVICE_NAME\",
-              \"containerPort\": 3050,
-              \"healthCheck\": {
-                \"path\": \"/ping\",
-                \"intervalSeconds\": 10
               }
             }"
