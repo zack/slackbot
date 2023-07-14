@@ -78,13 +78,13 @@ jobs:
         run: |
           echo "Releasing to Amazon Lightsail"
 
-          docker pull ${{ needs.build-service.outputs.image }}
+          docker pull $ORG_NAME/$SERVICE_NAME:$GITHUB_SHA
 
           # upload the docker image for this pipeline
           aws lightsail push-container-image \
             --service-name $CONTAINER_SERVICE_NAME  \
             --label ${{ env.SERVICE_NAME }}-latest  \
-            --image ${{ needs.build-service.outputs.image }}
+            --image $ORG_NAME/$SERVICE_NAME:$GITHUB_SHA
 
           # get uploaded image (its different every time)
           IMAGE_TAG=$(aws lightsail get-container-images --service $CONTAINER_SERVICE_NAME | jq -r .containerImages[0].image)
