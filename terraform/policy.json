@@ -21,7 +21,7 @@
                 "lightsail:RegisterContainerImage",
                 "lightsail:UpdateContainerService"
             ],
-            "Resource": "arn:aws:lightsail:{AWS_REGION}:{ACCOUNT_ID}:ContainerService/dev-usa-spending-bot-cs"
+            "Resource": "arn:aws:lightsail:{AWS_REGION}:{ACCOUNT_ID}:ContainerService/prod-zack-slackbot-cs"
         },
         {
             "Effect": "Allow",
@@ -30,7 +30,7 @@
                 "dynamodb:GetItem",
                 "dynamodb:PutItem"
             ],
-            "Resource": "arn:aws:dynamodb:{AWS_REGION}:{ACCOUNT_ID}:table/usa-spending-bot-dynamo-lock"
+            "Resource": "arn:aws:dynamodb:{AWS_REGION}:{ACCOUNT_ID}:table/zack-slackbot-dynamo-lock"
         },
         {
             "Effect": "Allow",
@@ -40,8 +40,8 @@
                 "s3:PutObject"
             ],
             "Resource": [
-                "arn:aws:s3:::usa-spending-bot-tfstate",
-                "arn:aws:s3:::usa-spending-bot-tfstate/*"
+                "arn:aws:s3:::zack-slackbot-tfstate",
+                "arn:aws:s3:::zack-slackbot-tfstate/*"
             ]
         }
     ]

@@ -1,5 +1,6 @@
 .env
-node_modules
+.terraform
+
 built
-slackbot.db
 db/*
+node_modules
