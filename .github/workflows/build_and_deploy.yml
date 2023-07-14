@@ -7,6 +7,7 @@ on:
 env:
   SERVICE_NAME: "slackbot"
   ORG_NAME: "dhun9" # dockerhub username
+  ENVIRONMENT: "production"
 
 jobs:
   build-service:
@@ -73,21 +74,26 @@ jobs:
 
       - name: Release to Amazon Lightsail
         env:
-          CONTAINER_SERVICE_NAME: cobot
+          CONTAINER_SERVICE_NAME: ${{ env.ENVIRONMENT }}-${{ env.SERVICE_NAME }}-cs
         run: |
           echo "Releasing to Amazon Lightsail"
 
           docker pull $ORG_NAME/$SERVICE_NAME:$GITHUB_SHA
 
+          echo "Uploading docker image to $CONTAINER_SERVICE_NAME"
+
           # upload the docker image for this pipeline
           aws lightsail push-container-image \
-            --region ${{ secrets.AWS_REGION }} \
-            --service-name cobot \
+            --service-name $CONTAINER_SERVICE_NAME  \
             --label ${{ env.SERVICE_NAME }}-latest  \
             --image $ORG_NAME/$SERVICE_NAME:$GITHUB_SHA
 
+          echo "Getting uploaded image"
+
           # get uploaded image (its different every time)
           IMAGE_TAG=$(aws lightsail get-container-images --service $CONTAINER_SERVICE_NAME | jq -r .containerImages[0].image)
+
+          echo "Creating deployment"
 
           # create a deployment with uploaded docker image
           aws lightsail create-container-service-deployment \
