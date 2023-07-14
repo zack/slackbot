@@ -82,7 +82,7 @@ jobs:
           # upload the docker image for this pipeline
           aws lightsail push-container-image \
             --region ${{ secrets.AWS_REGION }} \
-            --service-name $CONTAINER_SERVICE_NAME  \
+            --service-name cobot \
             --label ${{ env.SERVICE_NAME }}-latest  \
             --image $ORG_NAME/$SERVICE_NAME:$GITHUB_SHA
 
