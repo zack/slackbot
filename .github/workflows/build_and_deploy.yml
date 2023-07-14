@@ -83,7 +83,7 @@ jobs:
           echo "Uploading docker image to $CONTAINER_SERVICE_NAME"
 
           # upload the docker image for this pipeline
-          aws lightsail push-container-image \
+          aws --debug lightsail push-container-image \
             --service-name $CONTAINER_SERVICE_NAME  \
             --label ${{ env.SERVICE_NAME }}-latest  \
             --image $ORG_NAME/$SERVICE_NAME:$GITHUB_SHA
