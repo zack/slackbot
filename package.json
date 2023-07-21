@@ -4,7 +4,7 @@
   "description": "a slackbot",
   "main": "built/app.js",
   "engines": {
-    "node": ">=19.2.0"
+    "node": "=19.2.0"
   },
   "scripts": {
     "build": "tsc -p .",
