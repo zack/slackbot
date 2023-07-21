@@ -63,7 +63,7 @@ jobs:
         run: |
           # install LightsailCTL Plugin (https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-install-software)
           sudo apt-get update && sudo apt-get -y install curl jq
-          curl https://s3.us-east-1.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
+          curl https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
           chmod +x /usr/local/bin/lightsailctl
 
       - name: Login to Docker Hub
