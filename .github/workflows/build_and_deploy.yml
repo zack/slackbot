@@ -114,7 +114,7 @@ jobs:
                   \"DB_PORT\": \"${{ secrets.DB_PORT }}\",
 
                   \"SLACK_SIGNING_SECRET\": \"${{ secrets.SLACK_SIGNING_SECRET }}\",
-                  \"SLACK_TOKEN\": \"${{ secrets.SLACK_TOKEN }}\",
+                  \"SOCKET_TOKEN\": \"${{ secrets.SOCKET_TOKEN }}\",
                   \"SLACK_BOT_TOKEN\": \"${{ secrets.SLACK_BOT_TOKEN }}\",
 
                   \"FINNHUB_API_KEY\": \"${{ secrets.FINNHUB_API_KEY }}\",
