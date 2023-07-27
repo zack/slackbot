@@ -15,7 +15,7 @@ variable "application" {
 // create a variable for the environment
 variable "environment" {
   description = "The environment to deploy to"
-  default     = "dev"
+  default     = "prod"
   type        = string
 }
 

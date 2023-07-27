@@ -7,7 +7,7 @@ import { dispatchCommand, dispatchReaction } from './commandDispatcher';
 
 dotenv.config();
 
-// initialize the database
+// initialize the database!
 (async () => {
   try {
     const type : DataSourceTypeOptions = process.env.ORM_TYPE === 'mysql' ? 'mysql' : 'better-sqlite3';
@@ -22,7 +22,6 @@ dotenv.config();
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { App } = require('@slack/bolt');
 
-// Initializes your app with your bot token and signing secret
 const app = new App({
   appToken: process.env.SOCKET_TOKEN,
   customRoutes: [
