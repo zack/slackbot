@@ -7,7 +7,7 @@ import { dispatchCommand, dispatchReaction } from './commandDispatcher';
 
 dotenv.config();
 
-// initialize the database
+// initialize the database!
 (async () => {
   try {
     const type : DataSourceTypeOptions = process.env.ORM_TYPE === 'mysql' ? 'mysql' : 'better-sqlite3';
