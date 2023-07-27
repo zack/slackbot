@@ -22,7 +22,7 @@ dotenv.config();
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { App } = require('@slack/bolt');
 
-// Initializes your app with your bot token and signing secret
+// Initializes app with your bot token and signing secret
 const app = new App({
   appToken: process.env.SOCKET_TOKEN,
   customRoutes: [
