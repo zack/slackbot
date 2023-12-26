@@ -29,6 +29,7 @@
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin-js": "^1.5.1",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.44.0",
