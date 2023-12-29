@@ -7,7 +7,7 @@ import {
   multiPlus, plusCommand, plusEmoji, pluses,
 } from './commands/plus';
 import {
-  aiArtCommand, aiArtEmoji, aiChat, aiCost, aiText,
+  aiArtCommand, aiArtEmoji, aiChat, aiCost,
 } from './commands/openai';
 import emojibomb from './commands/emojibomb';
 import gotem from './commands/gotem';
@@ -43,15 +43,11 @@ const COMMANDS = {
   },
   aichat: {
     func: aiChat,
-    help: 'Sends a chat message to OpenAI\'s ChatGPT. Flag temperature (float, 0-2) with -t and length (2-4000) with -l. e.g.: `?aitext -t1.1 -l200 <prompt>`. Flag -r to clear history. Otherwise, uses the last 15 minutes of chats as context.',
+    help: 'Sends a chat message to OpenAI\'s ChatGPT. Flag temperature (float, 0-2) with -t and length (2-4000) with -l. e.g.: `?aichat -t1.1 -l200 <prompt>`. Flag -r to clear history. Otherwise, uses the last 15 minutes of chats as context.',
   },
   aicost: {
     func: aiCost,
     help: 'Returns spending data for AI tools.',
-  },
-  aitext: {
-    func: aiText,
-    help: 'Queries openai for some text. Flag temperature (float, 0-2) with -t and length (2-4000) with -l. e.g.: `?aitext -t1.1 -l200 <prompt>`',
   },
   apod: {
     func: apod,

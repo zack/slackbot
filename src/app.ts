@@ -10,7 +10,8 @@ dotenv.config();
 // initialize the database!
 (async () => {
   try {
-    const type : DataSourceTypeOptions = process.env.ORM_TYPE === 'mysql' ? 'mysql' : 'better-sqlite3';
+    const type: DataSourceTypeOptions =
+      process.env.ORM_TYPE === 'mysql' ? 'mysql' : 'better-sqlite3';
     const AppDataSource = createDataSource(type);
     await AppDataSource.initialize();
   } catch (error: unknown) {
@@ -46,10 +47,16 @@ app.message(/^\?([^ ].*)/, async ({ body, context, say }) => {
   dispatchCommand(app, body, context, say);
 });
 
-const incrementerWords = (process.env.WORDS || '').split(',').filter((w) => w !== '');
+const incrementerWords = (process.env.WORDS || '')
+  .split(',')
+  .filter((w) => w !== '');
 if (incrementerWords.length > 0) {
   app.message(new RegExp(`(${incrementerWords.join('|')})`, 'g'), async () => {
-    incrementChannelName(app, process.env.INCREMENTING_CHANNEL_ID, process.env.SLACK_USER_TOKEN);
+    incrementChannelName(
+      app,
+      process.env.INCREMENTING_CHANNEL_ID,
+      process.env.SLACK_USER_TOKEN,
+    );
   });
 }
 

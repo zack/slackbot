@@ -57,7 +57,7 @@ The command ?summon uses google image search. In order to use this commands, you
 The command ?gif uses giphy. In order to use this commands, you'll need to create an account at giphy.com, generate an API key, and fill it in in `.env`. Additionally, you must set the desired rating in the same file.
 
 ## Openai
-The commands ?aitext and ?aiart use openai. In order to use these commands, you'll need to create an account at openai.com, generate an API key, and fill it in in `.env`.
+The commands ?aichat and ?aiart use openai. In order to use these commands, you'll need to create an account at openai.com, generate an API key, and fill it in in `.env`.
 
 # Usage
 1. Commands are run using the ?command syntax.

@@ -17,8 +17,8 @@ let ENABLED = false;
 let OPENAI;
 const TMP_DIR = tmpdir();
 
-const TEXT_COST_PER_TOKEN = 0.00002; // $USD using Davinci https://openai.com/pricing/
-const CHAT_COST_PER_TOKEN = 0.000002; // $USD using gpt-3.5-turbo https://openai.com/pricing/
+const CHAT_COST_PER_INPUT_TOKEN = 0.00001; // $USD using gpt-4-1106-preview (turbo) https://openai.com/pricing/
+const CHAT_COST_PER_OUTPUT_TOKEN = 0.00003; // $USD using gpt-4-1106-preview (turbo) https://openai.com/pricing/
 const COST_PER_IMAGE = 0.02; // $USD using DALL-E @ 1024x1024
 const DALL_E_RESOLUTION = '1024x1024';
 
@@ -45,21 +45,21 @@ const getImage = async (text) => {
   return (response.data.data[0].url);
 };
 
-const logRequest = (command, tokens) => {
+const logRequest = (command, tokens?) => {
   let cost;
+
 
   if (command === 'aiart') {
     cost = COST_PER_IMAGE;
-  } else if (command === 'aichat') {
-    cost = tokens * CHAT_COST_PER_TOKEN;
   } else {
-    cost = tokens * TEXT_COST_PER_TOKEN;
+    const { prompt_tokens, completion_tokens } = tokens;
+    cost = prompt_tokens * CHAT_COST_PER_INPUT_TOKEN + completion_tokens * CHAT_COST_PER_OUTPUT_TOKEN;
   }
 
   const newOpenAi = new OpenAi();
   newOpenAi.command = command;
-  newOpenAi.tokens = tokens;
   newOpenAi.cost = cost;
+  newOpenAi.tokens = -1; // don't want to track these anymore, but don't want to do a db migration
   newOpenAi.save();
 };
 
@@ -101,7 +101,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
       });
     });
 
-    logRequest('aiart', 0);
+    logRequest('aiart');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
@@ -175,7 +175,7 @@ const aiChat = async ({
   }
 
   if (text.trim().length === 0) {
-    respondThreaded(say, body, 'Usage: `?aichat <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aitext -l300 -t5 <prompt>');
+    respondThreaded(say, body, 'Usage: `?aichat <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aichat -l300 -t5 <prompt>');
     return;
   }
 
@@ -212,7 +212,7 @@ const aiChat = async ({
 
     const response = await OPENAI.createChatCompletion({
       max_tokens: maxTokens,
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4-1106-preview',
       temperature,
       n: 1,
       messages,
@@ -220,7 +220,7 @@ const aiChat = async ({
     const responseMessage = response.data.choices[0].message.content;
 
     respond(say, body, responseMessage);
-    logRequest('aichat', response.data.usage.total_tokens);
+    logRequest('aichat', response.data.usage);
     logOutgoingMessage(user, text);
     logIncomingMessage(user, responseMessage);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -233,59 +233,6 @@ const aiChat = async ({
       out = `Error: ${errorMessage}`;
     }
     respond(say, body, out);
-  } finally {
-    app.client.reactions.remove({
-      channel: body.event.channel,
-      name: 'art-loading',
-      timestamp: body.event.ts,
-    });
-  }
-};
-
-const aiText = async ({
-  app, body, flags, text, say,
-}) => {
-  if (!ENABLED) {
-    respondThreaded(say, body, 'This command is not enabled. Likely, no valid API key was provided.');
-    return;
-  }
-
-  if (text.trim().length === 0) {
-    respondThreaded(say, body, 'Usage: `?aitext <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aitext -l300 -t5 <prompt>');
-    return;
-  }
-
-  let temperature = 0;
-  let maxTokens = 2000;
-
-  for (const flag of flags) {
-    if (flag[0] === 'l') {
-      const parsedFlagVal = parseInt(flag[1], 10) || maxTokens;
-      maxTokens = Math.max(Math.min(parsedFlagVal, 4000), 2);
-    } else if (flag[0] === 't') {
-      temperature = Math.max(Math.min(parseFloat(flag[1]), 2), 0);
-    }
-  }
-
-  app.client.reactions.add({
-    channel: body.event.channel,
-    name: 'art-loading',
-    timestamp: body.event.ts,
-  });
-
-  try {
-    const response = await OPENAI.createCompletion({
-      max_tokens: maxTokens,
-      model: 'text-davinci-003',
-      temperature,
-      n: 1,
-      prompt: text,
-    });
-    respond(say, body, `${response.data.choices[0].text}`);
-    logRequest('aitext', response.data.usage.total_tokens);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    respond(say, body, `Error: ${e.response.data.error.message}`);
   } finally {
     app.client.reactions.remove({
       channel: body.event.channel,
@@ -309,7 +256,6 @@ const aiCost = async ({ body, say }) => {
 
   const startOfThisMonth = startOfMonth(now);
   const thisMonthRequests = await OpenAi.findBy({ createdDate: MoreThan(startOfThisMonth) });
-  const thisMonthTextSum = getCostFromRequestsForCommand(thisMonthRequests, 'aitext');
   const thisMonthArtSum = getCostFromRequestsForCommand(thisMonthRequests, 'aiart');
   const thisMonthChatSum = getCostFromRequestsForCommand(thisMonthRequests, 'aichat');
   const thisMonthName = formatDate(now, 'MMMM');
@@ -320,32 +266,27 @@ const aiCost = async ({ body, say }) => {
   const lastMonthRequests = await OpenAi.findBy({
     createdDate: Between(startOfLastMonth, startOfThisMonth),
   });
-  const lastMonthTextSum = getCostFromRequestsForCommand(lastMonthRequests, 'aitext');
   const lastMonthArtSum = getCostFromRequestsForCommand(lastMonthRequests, 'aiart');
   const lastMonthChatSum = getCostFromRequestsForCommand(lastMonthRequests, 'aichat');
   const lastMonthName = formatDate(lastMonth, 'MMMM');
 
   const allTimeRequests = await OpenAi.find();
-  const allTimeTextSum = getCostFromRequestsForCommand(allTimeRequests, 'aitext');
   const allTimeArtSum = getCostFromRequestsForCommand(allTimeRequests, 'aiart');
   const allTimeChatSum = getCostFromRequestsForCommand(allTimeRequests, 'aichat');
 
   const out = `
 *${thisMonthName}* \`?aiart\` cost: ${thisMonthArtSum}
 *${thisMonthName}* \`?aichat\` cost: ${thisMonthChatSum}
-*${thisMonthName}* \`?aitext\` cost: ${thisMonthTextSum}
 
 *${lastMonthName}* \`?aiart\` cost: ${lastMonthArtSum}
 *${lastMonthName}* \`?aichat\` cost: ${lastMonthChatSum}
-*${lastMonthName}* \`?aitext\` cost: ${lastMonthTextSum}
 
 *All Time* \`?aiart\` cost: ${allTimeArtSum}
-*All Time* \`?aichat\` cost: ${allTimeChatSum}
-*All Time* \`?aitext\` cost: ${allTimeTextSum}`;
+*All Time* \`?aichat\` cost: ${allTimeChatSum}`;
 
   respond(say, body, out);
 };
 
 export {
-  aiArtCommand, aiArtEmoji, aiChat, aiCost, aiText,
+  aiArtCommand, aiArtEmoji, aiChat, aiCost,
 };
