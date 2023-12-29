@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { createWriteStream, unlinkSync } from 'fs';
 import https from 'https';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 import { tmpdir } from 'os';
 import { format as formatDate, startOfMonth, sub as subtractDate } from 'date-fns';
 import { Between, MoreThan } from 'typeorm';
@@ -24,10 +24,9 @@ const DALL_E_RESOLUTION = '1024x1024';
 
 if (process.env.OPENAI_API_KEY !== undefined) {
   try {
-    const configuration = new Configuration({
+    OPENAI = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
-    OPENAI = new OpenAIApi(configuration);
     ENABLED = true;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -105,7 +104,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    respond(say, body, `Error: ${e.response.data.error.message}`);
+    respond(say, body, `Error: ${e.error.message}`);
   } finally {
     app.client.reactions.remove({
       channel,
@@ -210,22 +209,23 @@ const aiChat = async ({
     const priorChatsClean = priorChats.map((chat) => ({ content: chat.content, role: chat.role }));
     const messages = [...priorChatsClean, { role: 'user', content: text }];
 
-    const response = await OPENAI.createChatCompletion({
+    const response = await OPENAI.chat.completions.create({
       max_tokens: maxTokens,
       model: 'gpt-4-1106-preview',
       temperature,
       n: 1,
       messages,
     });
-    const responseMessage = response.data.choices[0].message.content;
+    const responseMessage = response.choices[0].message.content;
 
     respond(say, body, responseMessage);
-    logRequest('aichat', response.data.usage);
+    logRequest('aichat', response.usage);
     logOutgoingMessage(user, text);
     logIncomingMessage(user, responseMessage);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    const errorMessage = e.response.data.error.message;
+    console.log(e);
+    const errorMessage = e.error.message;
     let out;
     if (errorMessage.startsWith("This model's maximum context length")) {
       out = `Error: ${errorMessage}. Use \`?aichat -r\` to reset your chat.`;
