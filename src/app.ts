@@ -36,6 +36,7 @@ const app = new App({
       }
     }
   ],
+  port: process.env.PORT || 3000,
   ignoreSelf: false,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   socketMode: true,
@@ -70,7 +71,7 @@ app.event('emoji_changed', async ({ body }) => {
 });
 
 (async () => {
-  await app.start(process.env.PORT || 3000);
+  await app.start();
   // eslint-disable-next-line no-console
   console.log('⚡️ Bolt app is running!');
 })();
