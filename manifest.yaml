@@ -1,0 +1,37 @@
+display_information:
+  name: slackbot
+  description: github.com/zack/slackbot
+  background_color: "#4d4d4d"
+features:
+  bot_user:
+    display_name: slackbot
+    always_online: false
+oauth_config:
+  scopes:
+    bot:
+      - channels:history
+      - chat:write
+      - emoji:read
+      - files:read
+      - files:write
+      - groups:history
+      - im:history
+      - mpim:history
+      - reactions:read
+      - reactions:write
+      - users:read
+settings:
+  event_subscriptions:
+    bot_events:
+      - emoji_changed
+      - message.channels
+      - message.groups
+      - message.im
+      - message.mpim
+      - reaction_added
+  interactivity:
+    is_enabled: true
+  org_deploy_enabled: false
+  socket_mode_enabled: true
+  token_rotation_enabled: false
+
