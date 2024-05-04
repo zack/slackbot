@@ -90,6 +90,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
   try {
     const filename = `/${TMP_DIR}/openai-output-${Date.now()}.png`;
     const imageUrl = await getImage(text);
+    console.log({ imageUrl });
     const file = createWriteStream(filename);
 
     https.get(imageUrl, (response) => {
