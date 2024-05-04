@@ -3,7 +3,11 @@ import { createWriteStream, unlinkSync } from 'fs';
 import https from 'https';
 import OpenAI from 'openai';
 import { tmpdir } from 'os';
-import { format as formatDate, startOfMonth, sub as subtractDate } from 'date-fns';
+import {
+  format as formatDate,
+  startOfMonth,
+  sub as subtractDate,
+} from 'date-fns';
 import { Between, MoreThan } from 'typeorm';
 import AiChat from '../entity/AiChat';
 import OpenAi from '../entity/OpenAi';
@@ -35,24 +39,25 @@ if (process.env.OPENAI_API_KEY !== undefined) {
 }
 
 const getImage = async (text) => {
-  const response = await OPENAI.createImage({
+  const response = await OPENAI.images.generate({
     prompt: text,
     n: 1,
     size: DALL_E_RESOLUTION,
   });
 
-  return (response.data.data[0].url);
+  return response.data[0].url;
 };
 
 const logRequest = (command, tokens?) => {
   let cost;
 
-
   if (command === 'aiart') {
     cost = COST_PER_IMAGE;
   } else {
     const { prompt_tokens, completion_tokens } = tokens;
-    cost = prompt_tokens * CHAT_COST_PER_INPUT_TOKEN + completion_tokens * CHAT_COST_PER_OUTPUT_TOKEN;
+    cost =
+      prompt_tokens * CHAT_COST_PER_INPUT_TOKEN +
+      completion_tokens * CHAT_COST_PER_OUTPUT_TOKEN;
   }
 
   const newOpenAi = new OpenAi();
@@ -64,7 +69,11 @@ const logRequest = (command, tokens?) => {
 
 const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
   if (!ENABLED) {
-    respondThreaded(say, body, 'This command is not enabled. Likely, no valid API key was provided in `.env`.');
+    respondThreaded(
+      say,
+      body,
+      'This command is not enabled. Likely, no valid API key was provided in `.env`.',
+    );
     return;
   }
 
@@ -81,6 +90,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
   try {
     const filename = `/${TMP_DIR}/openai-output-${Date.now()}.png`;
     const imageUrl = await getImage(text);
+    console.log({ imageUrl });
     const file = createWriteStream(filename);
 
     https.get(imageUrl, (response) => {
@@ -104,6 +114,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
+    console.log(e);
     respond(say, body, `Error: ${e.error.message}`);
   } finally {
     app.client.reactions.remove({
@@ -119,9 +130,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
   }
 };
 
-const aiArtCommand = async ({
-  app, body, text, say,
-}) => {
+const aiArtCommand = async ({ app, body, text, say }) => {
   const { event } = body;
 
   const { channel } = event;
@@ -131,9 +140,7 @@ const aiArtCommand = async ({
   aiArt(app, body, channel, text, threadTs, timestamp, say);
 };
 
-const aiArtEmoji = async ({
-  app, body, say,
-}) => {
+const aiArtEmoji = async ({ app, body, say }) => {
   const { event } = body;
 
   const text = await getTextFromBody(app, body);
@@ -165,16 +172,22 @@ const logIncomingMessage = (user, content) => {
   logMessage(user, content, 'assistant');
 };
 
-const aiChat = async ({
-  app, body, flags, text, say,
-}) => {
+const aiChat = async ({ app, body, flags, text, say }) => {
   if (!ENABLED) {
-    respondThreaded(say, body, 'This command is not enabled. Likely, no valid API key was provided.');
+    respondThreaded(
+      say,
+      body,
+      'This command is not enabled. Likely, no valid API key was provided.',
+    );
     return;
   }
 
   if (text.trim().length === 0) {
-    respondThreaded(say, body, 'Usage: `?aichat <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aichat -l300 -t5 <prompt>');
+    respondThreaded(
+      say,
+      body,
+      'Usage: `?aichat <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aichat -l300 -t5 <prompt>',
+    );
     return;
   }
 
@@ -205,8 +218,14 @@ const aiChat = async ({
   try {
     const fifteenMinutesInMs = 15 * 60000;
     const fifteenMinutesAgo = new Date(Date.now() - fifteenMinutesInMs);
-    const priorChats = await AiChat.findBy({ user, createdDate: MoreThan(fifteenMinutesAgo) });
-    const priorChatsClean = priorChats.map((chat) => ({ content: chat.content, role: chat.role }));
+    const priorChats = await AiChat.findBy({
+      user,
+      createdDate: MoreThan(fifteenMinutesAgo),
+    });
+    const priorChatsClean = priorChats.map((chat) => ({
+      content: chat.content,
+      role: chat.role,
+    }));
     const messages = [...priorChatsClean, { role: 'user', content: text }];
 
     const response = await OPENAI.chat.completions.create({
@@ -222,7 +241,7 @@ const aiChat = async ({
     logRequest('aichat', response.usage);
     logOutgoingMessage(user, text);
     logIncomingMessage(user, responseMessage);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     console.log(e);
     const errorMessage = e.error.message;
@@ -255,9 +274,17 @@ const aiCost = async ({ body, say }) => {
   const now = new Date();
 
   const startOfThisMonth = startOfMonth(now);
-  const thisMonthRequests = await OpenAi.findBy({ createdDate: MoreThan(startOfThisMonth) });
-  const thisMonthArtSum = getCostFromRequestsForCommand(thisMonthRequests, 'aiart');
-  const thisMonthChatSum = getCostFromRequestsForCommand(thisMonthRequests, 'aichat');
+  const thisMonthRequests = await OpenAi.findBy({
+    createdDate: MoreThan(startOfThisMonth),
+  });
+  const thisMonthArtSum = getCostFromRequestsForCommand(
+    thisMonthRequests,
+    'aiart',
+  );
+  const thisMonthChatSum = getCostFromRequestsForCommand(
+    thisMonthRequests,
+    'aichat',
+  );
   const thisMonthName = formatDate(now, 'MMMM');
 
   const lastMonth = subtractDate(now, { months: 1 });
@@ -266,13 +293,22 @@ const aiCost = async ({ body, say }) => {
   const lastMonthRequests = await OpenAi.findBy({
     createdDate: Between(startOfLastMonth, startOfThisMonth),
   });
-  const lastMonthArtSum = getCostFromRequestsForCommand(lastMonthRequests, 'aiart');
-  const lastMonthChatSum = getCostFromRequestsForCommand(lastMonthRequests, 'aichat');
+  const lastMonthArtSum = getCostFromRequestsForCommand(
+    lastMonthRequests,
+    'aiart',
+  );
+  const lastMonthChatSum = getCostFromRequestsForCommand(
+    lastMonthRequests,
+    'aichat',
+  );
   const lastMonthName = formatDate(lastMonth, 'MMMM');
 
   const allTimeRequests = await OpenAi.find();
   const allTimeArtSum = getCostFromRequestsForCommand(allTimeRequests, 'aiart');
-  const allTimeChatSum = getCostFromRequestsForCommand(allTimeRequests, 'aichat');
+  const allTimeChatSum = getCostFromRequestsForCommand(
+    allTimeRequests,
+    'aichat',
+  );
 
   const out = `
 *${thisMonthName}* \`?aiart\` cost: ${thisMonthArtSum}
@@ -287,6 +323,4 @@ const aiCost = async ({ body, say }) => {
   respond(say, body, out);
 };
 
-export {
-  aiArtCommand, aiArtEmoji, aiChat, aiCost,
-};
+export { aiArtCommand, aiArtEmoji, aiChat, aiCost };
