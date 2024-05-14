@@ -21,10 +21,16 @@ let ENABLED = false;
 let OPENAI;
 const TMP_DIR = tmpdir();
 
-const CHAT_COST_PER_INPUT_TOKEN = 0.00001; // $USD using gpt-4-1106-preview (turbo) https://openai.com/pricing/
-const CHAT_COST_PER_OUTPUT_TOKEN = 0.00003; // $USD using gpt-4-1106-preview (turbo) https://openai.com/pricing/
-const COST_PER_IMAGE = 0.02; // $USD using DALL-E @ 1024x1024
-const DALL_E_RESOLUTION = '1024x1024';
+// chat
+const CHAT_MODEL = 'gpt-4o';
+const CHAT_COST_PER_INPUT_TOKEN = 0.000005; // $USD using gpt-4o https://openai.com/pricing/
+const CHAT_COST_PER_OUTPUT_TOKEN = 0.000015; // $USD using gpt-4o https://openai.com/pricing/
+
+// images
+const IMAGE_QUALITY ='hd';
+const IMAGE_MODEL = 'dall-e-3';
+const IMAGE_RESOLUTION = '1792x1024';
+const COST_PER_IMAGE = 0.12; // $USD using DALL-E HD @ 1792x1024
 
 if (process.env.OPENAI_API_KEY !== undefined) {
   try {
@@ -40,9 +46,11 @@ if (process.env.OPENAI_API_KEY !== undefined) {
 
 const getImage = async (text) => {
   const response = await OPENAI.images.generate({
+    model: IMAGE_MODEL,
+    quality: IMAGE_QUALITY,
     prompt: text,
     n: 1,
-    size: DALL_E_RESOLUTION,
+    size: IMAGE_RESOLUTION,
   });
 
   return response.data[0].url;
@@ -230,7 +238,7 @@ const aiChat = async ({ app, body, flags, text, say }) => {
 
     const response = await OPENAI.chat.completions.create({
       max_tokens: maxTokens,
-      model: 'gpt-4-1106-preview',
+      model: CHAT_MODEL,
       temperature,
       n: 1,
       messages,
