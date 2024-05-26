@@ -4,9 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  Index,
 } from 'typeorm';
 
 @Entity()
+@Index(['learnee', 'content'], { unique: true })
 export default class Learn extends BaseEntity {
   @PrimaryGeneratedColumn()
     id!: number;
