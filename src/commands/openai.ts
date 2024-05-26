@@ -1,3 +1,5 @@
+import Database from 'better-sqlite3';
+
 import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { createWriteStream, unlinkSync } from 'fs';
 import https from 'https';
@@ -8,14 +10,28 @@ import {
   startOfMonth,
   sub as subtractDate,
 } from 'date-fns';
-import { Between, MoreThan } from 'typeorm';
-import AiChat from '../entity/AiChat';
-import OpenAi from '../entity/OpenAi';
 
 import { getTextFromBody } from '../utils/getTextFromBody';
 import { respond, respondThreaded } from '../utils/respond';
 
 dotenv.config();
+
+const db = new Database('./db/local.db');
+db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
+
+// to keep track of costs
+db.exec(`CREATE TABLE IF NOT EXISTS open_ai(
+                command TEXT,
+                tokens INTEGER,
+                cost REAL,
+                createdDate DATETIME DEFAULT CURRENT_TIMESTAMP)`);
+
+// for persistent gpt chats
+db.exec(`CREATE TABLE IF NOT EXISTS ai_chat(
+                user TEXT,
+                content TEXT,
+                role INTEGER,
+                createdDate DATETIME DEFAULT CURRENT_TIMESTAMP)`);
 
 let ENABLED = false;
 let OPENAI;
@@ -68,11 +84,8 @@ const logRequest = (command, tokens?) => {
       completion_tokens * CHAT_COST_PER_OUTPUT_TOKEN;
   }
 
-  const newOpenAi = new OpenAi();
-  newOpenAi.command = command;
-  newOpenAi.cost = cost;
-  newOpenAi.tokens = -1; // don't want to track these anymore, but don't want to do a db migration
-  newOpenAi.save();
+  const placeholder = -1; // don't want to track tokens anymore, but don't want to do a db migration
+  db.prepare('INSERT INTO open_ai(command, tokens, cost) values (?, ?, ?)').run(command, placeholder, cost);
 };
 
 const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
@@ -98,7 +111,6 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
   try {
     const filename = `/${TMP_DIR}/openai-output-${Date.now()}.png`;
     const imageUrl = await getImage(text);
-    console.log({ imageUrl });
     const file = createWriteStream(filename);
 
     https.get(imageUrl, (response) => {
@@ -122,7 +134,6 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log(e);
     respond(say, body, `Error: ${e.error.message}`);
   } finally {
     app.client.reactions.remove({
@@ -165,11 +176,7 @@ const aiArtEmoji = async ({ app, body, say }) => {
 };
 
 const logMessage = (user, content, role) => {
-  const newAiChat = new AiChat();
-  newAiChat.user = user;
-  newAiChat.content = content;
-  newAiChat.role = role;
-  newAiChat.save();
+  db.prepare('INSERT INTO ai_chat(user, content, role) values (?, ?, ?)').run(user, content, role);
 };
 
 const logOutgoingMessage = (user, content) => {
@@ -210,7 +217,7 @@ const aiChat = async ({ app, body, flags, text, say }) => {
     } else if (flag[0] === 't') {
       temperature = Math.max(Math.min(parseFloat(flag[1]), 2), 0);
     } else if (flag[0] === 'r') {
-      AiChat.delete({ user });
+      db.prepare('DELETE FROM ai_chat WHERE user = ?').run(user);
       const out = `Chat history for <@${user}> cleared`;
       respond(say, body, out);
       return;
@@ -224,17 +231,8 @@ const aiChat = async ({ app, body, flags, text, say }) => {
   });
 
   try {
-    const fifteenMinutesInMs = 15 * 60000;
-    const fifteenMinutesAgo = new Date(Date.now() - fifteenMinutesInMs);
-    const priorChats = await AiChat.findBy({
-      user,
-      createdDate: MoreThan(fifteenMinutesAgo),
-    });
-    const priorChatsClean = priorChats.map((chat) => ({
-      content: chat.content,
-      role: chat.role,
-    }));
-    const messages = [...priorChatsClean, { role: 'user', content: text }];
+    const priorChats = db.prepare("SELECT content, role FROM ai_chat WHERE user = ? AND createdDate >= Datetime('now', '-15 minutes')").all(user);
+    const messages = [...priorChats, { role: 'user', content: text }];
 
     const response = await OPENAI.chat.completions.create({
       max_tokens: maxTokens,
@@ -251,7 +249,7 @@ const aiChat = async ({ app, body, flags, text, say }) => {
     logIncomingMessage(user, responseMessage);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log(e);
+    console.log({ e });
     const errorMessage = e.error.message;
     let out;
     if (errorMessage.startsWith("This model's maximum context length")) {
@@ -281,10 +279,8 @@ const getCostFromRequestsForCommand = (requests, cmd) => {
 const aiCost = async ({ body, say }) => {
   const now = new Date();
 
-  const startOfThisMonth = startOfMonth(now);
-  const thisMonthRequests = await OpenAi.findBy({
-    createdDate: MoreThan(startOfThisMonth),
-  });
+  const startOfThisMonth = startOfMonth(now).getTime() / 1000;
+  const thisMonthRequests = db.prepare('SELECT command, cost FROM open_ai WHERE createdDate > ?').all(startOfThisMonth);
   const thisMonthArtSum = getCostFromRequestsForCommand(
     thisMonthRequests,
     'aiart',
@@ -297,10 +293,8 @@ const aiCost = async ({ body, say }) => {
 
   const lastMonth = subtractDate(now, { months: 1 });
 
-  const startOfLastMonth = startOfMonth(lastMonth);
-  const lastMonthRequests = await OpenAi.findBy({
-    createdDate: Between(startOfLastMonth, startOfThisMonth),
-  });
+  const startOfLastMonth = startOfMonth(lastMonth).getTime() / 1000;
+  const lastMonthRequests = db.prepare('SELECT command, cost FROM open_ai WHERE createdDate > ? AND createdDate < ?').all(startOfLastMonth, startOfThisMonth);
   const lastMonthArtSum = getCostFromRequestsForCommand(
     lastMonthRequests,
     'aiart',
@@ -311,7 +305,7 @@ const aiCost = async ({ body, say }) => {
   );
   const lastMonthName = formatDate(lastMonth, 'MMMM');
 
-  const allTimeRequests = await OpenAi.find();
+  const allTimeRequests = db.prepare('SELECT command, cost FROM open_ai').all();
   const allTimeArtSum = getCostFromRequestsForCommand(allTimeRequests, 'aiart');
   const allTimeChatSum = getCostFromRequestsForCommand(
     allTimeRequests,

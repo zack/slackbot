@@ -1,7 +1,12 @@
+import Database from 'better-sqlite3';
+
 import cleanUser from '../utils/cleanUser';
-import Plus from '../entity/Plus';
 import { respond, respondThreaded } from '../utils/respond';
 import verifyUser from '../utils/verifyUser';
+
+const db = new Database('./db/local.db');
+db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
+db.exec('CREATE TABLE IF NOT EXISTS plus(plusee TEXT, pluser TEXT, note TEXT, createdDate DATETIME DEFAULT CURRENT_TIMESTAMP)');
 
 const getNote = (args) => {
   if (args.length === 1) {
@@ -26,17 +31,11 @@ const plus = async (app, body, note, plusee, pluser, say) => {
   if (pluser === plusee) {
     out = 'Hey, no plussing yourself.';
   } else {
-    const newPlus = new Plus();
-    newPlus.plusee = plusee;
-    newPlus.pluser = pluser;
-    newPlus.note = note || '';
-    await newPlus.save();
-
-    const pluses = await Plus.findBy({ plusee });
-    const plusCount = pluses.length;
+    db.prepare('INSERT INTO plus(plusee, pluser, note) values (?, ?, ?)').run(plusee, pluser, note);
+    const { pluses } = db.prepare('SELECT count(*) as plus FROM plus WHERE plusee = ?').get(plusee);
 
     const forNote = note.length > 0 ? `for *${note}*` : '';
-    out = `${pluserName} has plussed <@${plusee}> ${forNote}. <@${plusee}> now has *${plusCount} ${plusCount === 1 ? 'plus' : 'pluses'}*!`;
+    out = `${pluserName} has plussed <@${plusee}> ${forNote}. <@${plusee}> now has *${pluses} ${pluses === 1 ? 'plus' : 'pluses'}*!`;
   }
 
   respondThreaded(say, body, out);
@@ -97,8 +96,7 @@ const pluses = async ({
     return;
   }
 
-  const plusesData = await Plus.findBy({ plusee });
-  const plusCount = plusesData.length;
+  const { plusCount } = db.prepare('SELECT count(*) as plusCount FROM plus WHERE plusee = ?').get(plusee);
 
   const out = `<@${plusee}> has *${plusCount} ${plusCount === 1 ? 'plus' : 'pluses'}*!`;
 

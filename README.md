@@ -1,9 +1,8 @@
 A basic slackbot built on Node.
 
 # Environment Requirements
-1. npm and sqlite or mysql
+1. npm and sqlite
 1. I recommend `pm2` with the `--watch` flag and sqlite
-1. There are also the necessary files to run this with Docker and MySQL
 
 # Slack Permission and Requirements
 ## OAuth & Permissions > Scopes > Bot Token Scopes
