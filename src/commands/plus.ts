@@ -32,7 +32,7 @@ const plus = async (app, body, note, plusee, pluser, say) => {
     out = 'Hey, no plussing yourself.';
   } else {
     db.prepare('INSERT INTO plus(plusee, pluser, note) values (?, ?, ?)').run(plusee, pluser, note);
-    const { pluses } = db.prepare('SELECT count(*) as plus FROM plus WHERE plusee = ?').get(plusee);
+    const { pluses } = db.prepare('SELECT count(*) as pluses FROM plus WHERE plusee = ?').get(plusee);
 
     const forNote = note.length > 0 ? `for *${note}*` : '';
     out = `${pluserName} has plussed <@${plusee}> ${forNote}. <@${plusee}> now has *${pluses} ${pluses === 1 ? 'plus' : 'pluses'}*!`;
