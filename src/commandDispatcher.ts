@@ -171,6 +171,9 @@ const REACTIONS = {
   learn: {
     func: learnEmoji,
   },
+  'learn-intensifies': {
+    func: learnEmoji,
+  },
   heavy_plus_sign: {
     func: plusEmoji,
   },
