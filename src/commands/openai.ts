@@ -45,8 +45,8 @@ const CHAT_COST_PER_OUTPUT_TOKEN = 0.000015; // $USD using gpt-4o https://openai
 // images
 const IMAGE_QUALITY ='hd';
 const IMAGE_MODEL = 'gpt-image-2';
-// const IMAGE_RESOLUTION = '1792x1024';
-const COST_PER_IMAGE = 0.12; // $USD using DALL-E HD @ 1792x1024
+const IMAGE_RESOLUTION = '1792x1024';
+const COST_PER_IMAGE = 0.12; // $USD using DALL-E HD @ 1792x1024. no idea what it is for gpt-image-2
 
 if (process.env.OPENAI_API_KEY !== undefined) {
   try {
