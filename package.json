@@ -4,20 +4,20 @@
   "description": "a slackbot",
   "main": "built/app.js",
   "engines": {
-    "node": "=19.2.0"
+    "node": "=26.5.0"
   },
   "scripts": {
     "build": "tsc -p .",
     "build:watch": "tsc -w -p .",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "start": "nodemon --exec node --loader ts-node/esm src/app.ts"
+    "start": "tsx watch src/app.ts"
   },
   "author": "Zack Youngren",
   "license": "ISC",
   "dependencies": {
     "@slack/bolt": "^3.13.1",
-    "better-sqlite3": "^8.4.0",
+    "better-sqlite3": "^13.0.1",
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
     "finnhub": "^1.2.17",
@@ -37,9 +37,7 @@
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "husky": "^8.0.3",
-    "nodemon": "^3.0.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.1.6",
-    "typescript-eslint-parser": "^22.0.0"
+    "tsx": "^4.19.2",
+    "typescript": "^5.1.6"
   }
 }
