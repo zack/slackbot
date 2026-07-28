@@ -7,7 +7,7 @@ import {
   multiPlus, plusCommand, plusEmoji, pluses,
 } from './commands/plus';
 import {
-  aiArtCommand, aiArtEmoji, aiChat, aiCost,
+  aiImageCommand, aiImageEmoji, aiChat, aiCost,
 } from './commands/openai';
 import emojibomb from './commands/emojibomb';
 import gotem from './commands/gotem';
@@ -37,9 +37,9 @@ const COMMANDS = {
     func: plusCommand,
     help: 'Give another use 1 plus. Alias of ?plus.',
   },
-  aiart: {
-    func: aiArtCommand,
-    help: 'Queries openai for some art. Defaults to low quality; flag -m for medium or -h for high quality (higher quality costs more). e.g.: `?aiart -h a crab wearing a hat`.',
+  aiimage: {
+    func: aiImageCommand,
+    help: 'Queries openai for an image. Defaults to low quality; flag -m for medium or -h for high quality (higher quality costs more). e.g.: `?aiimage -h a crab wearing a hat`.',
   },
   aichat: {
     func: aiChat,
@@ -156,8 +156,8 @@ const COMMANDS = {
 };
 
 const REACTIONS = {
-  aiart: {
-    func: aiArtEmoji,
+  aiimage: {
+    func: aiImageEmoji,
   },
   'delete-this': {
     func: deleteThis,

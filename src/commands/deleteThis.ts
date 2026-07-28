@@ -42,7 +42,7 @@ const deleteThis = async ({
   });
 
   // We check against the bot's user ID here as well since some API calls
-  // (notably the file upload call, which is used for ?aiart) create messages
+  // (notably the file upload call, which is used for ?aiimage) create messages
   // that are associated with the bot's user ID instead of the bot's bot ID.
 
   const message = replies.messages[0];

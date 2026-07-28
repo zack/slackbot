@@ -168,7 +168,7 @@ const logRequest = (command, cost) => {
   db.prepare('INSERT INTO open_ai(command, tokens, cost, createdDate) values (?, ?, ?, ?)').run(command, placeholder, cost, getEasternTimestamp());
 };
 
-const aiArt = async (app, body, channel, text, threadTs, timestamp, say, quality = IMAGE_QUALITY_DEFAULT) => {
+const aiImage = async (app, body, channel, text, threadTs, timestamp, say, quality = IMAGE_QUALITY_DEFAULT) => {
   if (!ENABLED) {
     respondThreaded(
       say,
@@ -206,7 +206,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say, quality
 
     unlinkSync(`${filename}`);
 
-    logRequest('aiart', cost);
+    logRequest('aiimage', cost);
 
   } catch (e: any) {
     respond(say, body, `Error: ${e.error?.message ?? e.message}`);
@@ -224,7 +224,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say, quality
   }
 };
 
-const aiArtCommand = async ({ app, body, flags, text, say }) => {
+const aiImageCommand = async ({ app, body, flags, text, say }) => {
   const { event } = body;
 
   const { channel } = event;
@@ -238,10 +238,10 @@ const aiArtCommand = async ({ app, body, flags, text, say }) => {
     }
   }
 
-  aiArt(app, body, channel, text, threadTs, timestamp, say, quality);
+  aiImage(app, body, channel, text, threadTs, timestamp, say, quality);
 };
 
-const aiArtEmoji = async ({ app, body, say }) => {
+const aiImageEmoji = async ({ app, body, say }) => {
   const { event } = body;
 
   const text = await getTextFromBody(app, body);
@@ -254,7 +254,7 @@ const aiArtEmoji = async ({ app, body, say }) => {
   });
   const threadTs = history.messages[0].thread_ts || history.messages[0].ts;
 
-  aiArt(app, body, channel, text, threadTs, timestamp, say);
+  aiImage(app, body, channel, text, threadTs, timestamp, say);
 };
 
 const logMessage = (user, content, role) => {
@@ -371,7 +371,7 @@ const aiCost = async ({ body, say }) => {
   const thisMonthRequests = db.prepare('SELECT command, cost FROM open_ai WHERE createdDate > ?').all(startOfThisMonth);
   const thisMonthArtSum = getCostFromRequestsForCommand(
     thisMonthRequests,
-    'aiart',
+    'aiimage',
   );
   const thisMonthChatSum = getCostFromRequestsForCommand(
     thisMonthRequests,
@@ -385,7 +385,7 @@ const aiCost = async ({ body, say }) => {
   const lastMonthRequests = db.prepare('SELECT command, cost FROM open_ai WHERE createdDate > ? AND createdDate < ?').all(startOfLastMonth, startOfThisMonth);
   const lastMonthArtSum = getCostFromRequestsForCommand(
     lastMonthRequests,
-    'aiart',
+    'aiimage',
   );
   const lastMonthChatSum = getCostFromRequestsForCommand(
     lastMonthRequests,
@@ -394,23 +394,23 @@ const aiCost = async ({ body, say }) => {
   const lastMonthName = getEasternMonthName(lastMonth);
 
   const allTimeRequests = db.prepare('SELECT command, cost FROM open_ai').all();
-  const allTimeArtSum = getCostFromRequestsForCommand(allTimeRequests, 'aiart');
+  const allTimeArtSum = getCostFromRequestsForCommand(allTimeRequests, 'aiimage');
   const allTimeChatSum = getCostFromRequestsForCommand(
     allTimeRequests,
     'aichat',
   );
 
   const out = `
-*${thisMonthName}* \`?aiart\` cost: ${thisMonthArtSum}
+*${thisMonthName}* \`?aiimage\` cost: ${thisMonthArtSum}
 *${thisMonthName}* \`?aichat\` cost: ${thisMonthChatSum}
 
-*${lastMonthName}* \`?aiart\` cost: ${lastMonthArtSum}
+*${lastMonthName}* \`?aiimage\` cost: ${lastMonthArtSum}
 *${lastMonthName}* \`?aichat\` cost: ${lastMonthChatSum}
 
-*All Time* \`?aiart\` cost: ${allTimeArtSum}
+*All Time* \`?aiimage\` cost: ${allTimeArtSum}
 *All Time* \`?aichat\` cost: ${allTimeChatSum}`;
 
   respond(say, body, out);
 };
 
-export { aiArtCommand, aiArtEmoji, aiChat, aiCost };
+export { aiImageCommand, aiImageEmoji, aiChat, aiCost };
