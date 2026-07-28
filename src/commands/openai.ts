@@ -200,7 +200,7 @@ const aiImage = async (app, body, channel, text, threadTs, timestamp, say, quali
       channel_id: channel,
       file: filename,
       filename: 'this is art',
-      initial_comment: `(_${responseQuality}_, _${formatCost(cost)}_): ${text}`,
+      initial_comment: `(_quality: ${responseQuality}_, _cost: ${formatCost(cost)}_): "${text}"`,
       thread_ts: threadTs,
     });
 
