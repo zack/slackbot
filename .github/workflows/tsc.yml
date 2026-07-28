@@ -1,0 +1,16 @@
+name: 'Typescript Compiler'
+run-name: ${{ github.actor }} is linting Javascript
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  tsc:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 26.5.0
+    - run: npm ci --legacy-peer-deps
+    - run: npx tsc
