@@ -1,4 +1,4 @@
-name: 'Node Linter'
+name: 'Typescript Compiler'
 run-name: ${{ github.actor }} is linting Javascript
 on:
   pull_request:
@@ -12,4 +12,5 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 26.5.0
+    - run: npm ci --legacy-peer-deps
     - run: npx tsc
