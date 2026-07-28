@@ -40,7 +40,8 @@ const CHAT_COST_PER_CACHED_INPUT_TOKEN = 0.0000001; // $0.10 / 1M cached input t
 const CHAT_COST_PER_OUTPUT_TOKEN = 0.000006; // $6.00 / 1M output tokens, gpt-5.6-luna
 
 // images
-const IMAGE_QUALITY ='low';
+const IMAGE_QUALITY_DEFAULT = 'low';
+const IMAGE_QUALITY_FLAGS = { m: 'medium', h: 'high' };
 const IMAGE_MODEL = 'gpt-image-2';
 const IMAGE_RESOLUTION = '1792x1024';
 const IMAGE_COST_PER_TEXT_INPUT_TOKEN = 0.000005; // $5.00 / 1M text input tokens, gpt-image-2
@@ -58,9 +59,9 @@ if (process.env.OPENAI_API_KEY !== undefined) {
   }
 }
 
-const getImage = async (text) => OPENAI.images.generate({
+const getImage = async (text, quality) => OPENAI.images.generate({
   model: IMAGE_MODEL,
-  quality: IMAGE_QUALITY,
+  quality,
   prompt: text,
   n: 1,
   size: IMAGE_RESOLUTION,
@@ -122,7 +123,7 @@ const getImageCost = (usage) => {
   );
 };
 
-const formatCost = (cost) => (cost < 0.01 ? '<$0.00' : `$${cost.toFixed(2)}`);
+const formatCost = (cost) => (cost < 0.01 ? '<$0.01' : `$${cost.toFixed(2)}`);
 
 // SQLite's CURRENT_TIMESTAMP is UTC; we want open_ai.createdDate in US Eastern (DST-aware).
 const getEasternDateParts = (date) => {
@@ -167,7 +168,7 @@ const logRequest = (command, cost) => {
   db.prepare('INSERT INTO open_ai(command, tokens, cost, createdDate) values (?, ?, ?, ?)').run(command, placeholder, cost, getEasternTimestamp());
 };
 
-const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
+const aiArt = async (app, body, channel, text, threadTs, timestamp, say, quality = IMAGE_QUALITY_DEFAULT) => {
   if (!ENABLED) {
     respondThreaded(
       say,
@@ -189,8 +190,9 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
 
   try {
     const filename = `/${TMP_DIR}/openai-output-${Date.now()}.png`;
-    const response = await getImage(text);
+    const response = await getImage(text, quality);
     const cost = getImageCost(response.usage);
+    const responseQuality = response.quality ?? quality;
 
     await writeImageToFile(response.data[0], filename);
 
@@ -198,7 +200,7 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
       channel_id: channel,
       file: filename,
       filename: 'this is art',
-      initial_comment: `_(${formatCost(cost)})_ ${text}`,
+      initial_comment: `(_${responseQuality}_, _${formatCost(cost)}_): ${text}`,
       thread_ts: threadTs,
     });
 
@@ -222,14 +224,21 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
   }
 };
 
-const aiArtCommand = async ({ app, body, text, say }) => {
+const aiArtCommand = async ({ app, body, flags, text, say }) => {
   const { event } = body;
 
   const { channel } = event;
   const timestamp = event.ts;
   const threadTs = event.thread_ts;
 
-  aiArt(app, body, channel, text, threadTs, timestamp, say);
+  let quality = IMAGE_QUALITY_DEFAULT;
+  for (const flag of flags) {
+    if (IMAGE_QUALITY_FLAGS[flag[0]]) {
+      quality = IMAGE_QUALITY_FLAGS[flag[0]];
+    }
+  }
+
+  aiArt(app, body, channel, text, threadTs, timestamp, say, quality);
 };
 
 const aiArtEmoji = async ({ app, body, say }) => {

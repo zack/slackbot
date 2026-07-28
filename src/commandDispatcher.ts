@@ -39,7 +39,7 @@ const COMMANDS = {
   },
   aiart: {
     func: aiArtCommand,
-    help: 'Queries openai for some art.',
+    help: 'Queries openai for some art. Defaults to low quality; flag -m for medium or -h for high quality (higher quality costs more). e.g.: `?aiart -h a crab wearing a hat`.',
   },
   aichat: {
     func: aiChat,
