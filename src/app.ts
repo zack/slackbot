@@ -4,9 +4,8 @@ import announceEmojiChange from './emojiChanges';
 import incrementChannelName from './channelIncrementer';
 import { dispatchCommand, dispatchReaction } from './commandDispatcher';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { App } = require('@slack/bolt');
 
 const app = new App({
@@ -47,6 +46,5 @@ app.event('emoji_changed', async ({ body }) => {
 
 (async () => {
   await app.start();
-  // eslint-disable-next-line no-console
   console.log('⚡️ Bolt app is running!');
 })();

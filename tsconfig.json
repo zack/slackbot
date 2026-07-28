@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    // moduleResolution "node" (aka node10) is deprecated as of TS 6.0 and slated for
+    // removal in TS 7.0; a full migration to node16/nodenext resolution is a separate,
+    // larger change, so we opt back in to the old behavior for now.
+    "ignoreDeprecations": "6.0",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,

@@ -1,5 +1,3 @@
-/* eslint-disable no-irregular-whitespace */
-
 import { respond } from '../utils/respond';
 
 const rocket = ({ say, body }) => {

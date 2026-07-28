@@ -6,7 +6,7 @@ import {
 import { respond, respondThreaded } from '../utils/respond';
 import sample from '../utils/sample';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 let ENABLED = true;
 const APOD_URL = 'https://api.nasa.gov/planetary/apod?';
