@@ -54,25 +54,19 @@ const release = async ({ body, say }) => {
       title,
     });
 
-    const built = await rebuild({ body, say });
+    const installed = await rebuild({ body, say });
 
-    if (!built) {
+    if (!installed) {
       // No restart is coming from this attempt, so don't leave a marker
       // around to falsely confirm some later, unrelated restart.
       clearReleaseMarker();
       return;
     }
 
-    // pm2's file-watch restart can't be relied on (it may not even be
-    // enabled on the running process, depending on how it was started), so
-    // explicitly restart ourselves under pm2 to actually run the new build.
-    if (process.env.pm_id) {
-      respondThreaded(say, body, 'Restarting...');
-      childProcess.execSync(`pm2 restart ${process.env.pm_id}`);
-    } else {
-      respondThreaded(say, body, 'Not running under pm2, so not restarting automatically. Restart the process manually to run the new build.');
-      clearReleaseMarker();
-    }
+    // pm2 runs the bot via `tsx watch src/app.ts`, which already noticed
+    // the files the pull just changed and is restarting on its own — no
+    // need to trigger a restart ourselves.
+    respondThreaded(say, body, 'Restarting...');
   });
 };
 

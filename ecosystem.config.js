@@ -7,10 +7,11 @@ module.exports = {
     // and `pm2 restart ecosystem.config.js` reliably targets the existing
     // process instead of spawning a duplicate.
     name: path.basename(__dirname),
-    ignore_watch: ['./src'],
     namespace: 'slackbot',
-    script: './built/app.js',
-    watch: ['./built'],
-    watch_delay: 3000,
+    // tsx's own watcher reloads on every src change (dev-in-prod), so pm2
+    // just supervises the process rather than watching files itself —
+    // pm2's built-in watch has proven unreliable (silently stops watching).
+    script: './node_modules/.bin/tsx',
+    args: ['watch', 'src/app.ts'],
   }],
 };

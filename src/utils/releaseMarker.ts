@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
-// The rebuild triggered by ?release writes into ./built, which pm2 watches
-// and restarts the process on, so the process handling the release may be
-// killed before it can report success. This marker survives that restart so
-// the next boot can confirm the release actually completed.
+// ?release pulls new commits into src, which tsx watch notices and restarts
+// on, so the process handling the release may be killed before it can
+// report success. This marker survives that restart so the next boot can
+// confirm the release actually completed.
 const MARKER_PATH = path.join(process.cwd(), '.release-marker.json');
 
 const writeReleaseMarker = (marker: {
