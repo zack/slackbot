@@ -29,20 +29,17 @@ const runStep = (say, body, label: string, command: string) => {
   }
 };
 
-// Rebuilds the slackbot. Resolves to whether the build completed
-// successfully.
+// Installs dependencies for the slackbot. Resolves to whether it completed
+// successfully. There's no compile step: pm2 runs the bot straight from
+// src via `tsx watch`, which recompiles and reloads on its own whenever a
+// .ts file changes.
 const rebuild = ({ body, say }): Promise<boolean> => {
-  respondThreaded(say, body, 'Rebuilding... (please wait)');
+  respondThreaded(say, body, 'Installing dependencies... (please wait)');
 
   return new Promise((resolve) => {
-    // Give it time to respond before building
+    // Give it time to respond before installing
     setTimeout(() => {
-      if (!runStep(say, body, 'installing', 'npm install')) {
-        resolve(false);
-        return;
-      }
-
-      resolve(runStep(say, body, 'building', 'npm run build'));
+      resolve(runStep(say, body, 'installing', 'npm install'));
     }, 1000);
   });
 };

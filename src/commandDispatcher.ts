@@ -119,7 +119,7 @@ const COMMANDS = {
   },
   rebuild: {
     func: rebuild,
-    help: 'Rebuilds the typescript.',
+    help: 'Reinstalls npm dependencies.',
   },
   release: {
     func: release,
