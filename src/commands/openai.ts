@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 
 import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import { createWriteStream, unlinkSync } from 'fs';
+import { createWriteStream, unlinkSync, writeFileSync } from 'fs';
 import https from 'https';
 import OpenAI from 'openai';
 import { tmpdir } from 'os';
@@ -43,7 +43,7 @@ const CHAT_COST_PER_INPUT_TOKEN = 0.000005; // $USD using gpt-4o https://openai.
 const CHAT_COST_PER_OUTPUT_TOKEN = 0.000015; // $USD using gpt-4o https://openai.com/pricing/
 
 // images
-const IMAGE_QUALITY ='hd';
+const IMAGE_QUALITY ='low';
 const IMAGE_MODEL = 'gpt-image-2';
 const IMAGE_RESOLUTION = '1792x1024';
 const COST_PER_IMAGE = 0.12; // $USD using DALL-E HD @ 1792x1024. no idea what it is for gpt-image-2
@@ -69,8 +69,38 @@ const getImage = async (text) => {
     size: IMAGE_RESOLUTION,
   });
 
-  return response.data[0].url;
+  return response.data[0];
 };
+
+const writeImageToFile = (imageData, filename) => new Promise<void>((resolve, reject) => {
+  if (imageData.b64_json) {
+    try {
+      writeFileSync(filename, Buffer.from(imageData.b64_json, 'base64'));
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+    return;
+  }
+
+  if (imageData.url) {
+    const file = createWriteStream(filename);
+
+    const request = https.get(imageData.url, (response) => {
+      response.pipe(file);
+      file.on('finish', () => {
+        file.close();
+        resolve();
+      });
+      file.on('error', reject);
+      response.on('error', reject);
+    });
+    request.on('error', reject);
+    return;
+  }
+
+  reject(new Error('OpenAI did not return image data'));
+});
 
 const logRequest = (command, tokens?) => {
   let cost;
@@ -110,31 +140,25 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
 
   try {
     const filename = `/${TMP_DIR}/openai-output-${Date.now()}.png`;
-    const imageUrl = await getImage(text);
-    const file = createWriteStream(filename);
+    const imageData = await getImage(text);
 
-    https.get(imageUrl, (response) => {
-      response.pipe(file);
-      file.on('finish', async () => {
-        file.close();
+    await writeImageToFile(imageData, filename);
 
-        await app.client.files.uploadV2({
-          channel_id: channel,
-          file: filename,
-          filename: 'this is art',
-          initial_comment: text,
-          thread_ts: threadTs,
-        });
-
-        unlinkSync(`${filename}`);
-      });
+    await app.client.files.uploadV2({
+      channel_id: channel,
+      file: filename,
+      filename: 'this is art',
+      initial_comment: text,
+      thread_ts: threadTs,
     });
+
+    unlinkSync(`${filename}`);
 
     logRequest('aiart');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    respond(say, body, `Error: ${e.error.message}`);
+    respond(say, body, `Error: ${e.error?.message ?? e.message}`);
   } finally {
     app.client.reactions.remove({
       channel,
@@ -201,21 +225,18 @@ const aiChat = async ({ app, body, flags, text, say }) => {
     respondThreaded(
       say,
       body,
-      'Usage: `?aichat <prompt>`. Flag length (0-4000) with -l or temp (0-9) with -t. E.g. ?aichat -l300 -t5 <prompt>',
+      'Usage: `?aichat <prompt>`. Flag length (0-4000) with -l. E.g. ?aichat -l300 <prompt>',
     );
     return;
   }
 
   const { user } = body.event;
-  let temperature = 0;
-  let maxTokens = 2000;
+  let maxCompletionTokens = 2000;
 
   for (const flag of flags) {
     if (flag[0] === 'l') {
-      const parsedFlagVal = parseInt(flag[1], 10) || maxTokens;
-      maxTokens = Math.max(Math.min(parsedFlagVal, 4000), 2);
-    } else if (flag[0] === 't') {
-      temperature = Math.max(Math.min(parseFloat(flag[1]), 2), 0);
+      const parsedFlagVal = parseInt(flag[1], 10) || maxCompletionTokens;
+      maxCompletionTokens = Math.max(Math.min(parsedFlagVal, 4000), 2);
     } else if (flag[0] === 'r') {
       db.prepare('DELETE FROM ai_chat WHERE user = ?').run(user);
       const out = `Chat history for <@${user}> cleared`;
@@ -235,9 +256,8 @@ const aiChat = async ({ app, body, flags, text, say }) => {
     const messages = [...priorChats, { role: 'user', content: text }];
 
     const response = await OPENAI.chat.completions.create({
-      max_tokens: maxTokens,
+      max_completion_tokens: maxCompletionTokens,
       model: CHAT_MODEL,
-      temperature,
       n: 1,
       messages,
     });
