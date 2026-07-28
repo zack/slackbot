@@ -17,6 +17,19 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   socketMode: true,
   token: process.env.SLACK_BOT_TOKEN,
+  // Socket mode doesn't listen on any HTTP port by default, so without a
+  // customRoute here, Bolt never starts the underlying server and there's
+  // nothing for an uptime monitor to hit.
+  customRoutes: [
+    {
+      path: '/health',
+      method: ['GET'],
+      handler: (_req, res) => {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('ok');
+      },
+    },
+  ],
 });
 
 // Messages that start with ? are interpreted as commands
