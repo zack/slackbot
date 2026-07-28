@@ -1,4 +1,5 @@
 .env
+.release-marker.json
 
 built
 db/*

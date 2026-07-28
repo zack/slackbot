@@ -45,6 +45,7 @@ A basic slackbot built on Node.
 1. If you're running multiple slackbots, rename each one with `$ pm2 restart <id> -n <newname>`.
 1. Your bot should now be able to respond to commands!
 1. To deploy the latest version in production, send the command `?deploy`. Check what version is running with `?version`.
+1. To automatically run `?deploy` every morning (picking up any commits merged to `main` since the last release, e.g. auto-merged Dependabot PRs), set `AUTO_RELEASE_CHANNEL_ID` in `.env` to the channel you want it posted in. Optionally override the time with `AUTO_RELEASE_CRON` (a cron expression, default `0 8 * * *`) and `AUTO_RELEASE_TZ` (an IANA timezone, default `America/New_York`). Leave `AUTO_RELEASE_CHANNEL_ID` unset to disable this.
 
 # APIs
 You should delete the relevant lines from the `.env` file for any APIs you do not wish to use.
