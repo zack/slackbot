@@ -361,7 +361,7 @@ const getCostFromRequestsForCommand = (requests, cmd) => {
   }
 
   const func = (memo, { command, cost }) => memo + (command === cmd ? cost : 0);
-  return `$${Math.round(requests.reduce(func, 0) * 100) / 100}`;
+  return `$${requests.reduce(func, 0).toFixed(2)}`;
 };
 
 const aiCost = async ({ body, say }) => {
