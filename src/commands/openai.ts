@@ -10,7 +10,7 @@ import { sub as subtractDate } from 'date-fns';
 import { getTextFromBody } from '../utils/getTextFromBody';
 import { respond, respondThreaded } from '../utils/respond';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const db = new Database('./db/local.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
@@ -54,7 +54,6 @@ if (process.env.OPENAI_API_KEY !== undefined) {
     });
     ENABLED = true;
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error(e);
   }
 }
@@ -207,7 +206,6 @@ const aiArt = async (app, body, channel, text, threadTs, timestamp, say) => {
 
     logRequest('aiart', cost);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     respond(say, body, `Error: ${e.error?.message ?? e.message}`);
   } finally {
@@ -329,7 +327,6 @@ const aiChat = async ({ app, body, flags, text, say }) => {
     logRequest('aichat', cost);
     logOutgoingMessage(user, text);
     logIncomingMessage(user, responseMessage);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     console.log({ e });
     const errorMessage = e.error.message;

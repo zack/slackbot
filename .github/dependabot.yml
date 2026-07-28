@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "typescript"
+        versions: [">=7.0.0"]
+        # typescript-eslint@8.x peer-requires typescript <6.1.0 as of 2026-07;
+        # TypeScript 7.x is a new compiler implementation with no compatible
+        # typescript-eslint release yet. Revisit once that support lands.

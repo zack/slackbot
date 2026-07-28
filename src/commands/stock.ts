@@ -4,19 +4,16 @@ import finnhub = require('finnhub');
 
 import { respond, respondThreaded } from '../utils/respond'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 let ENABLED = false;
 let finnhubClient;
 
 if (process.env.FINNHUB_API_KEY !== undefined && process.env.FINNHUB_API_KEY.trim() !== '') {
   try {
-    const apiKey = finnhub.ApiClient.instance.authentications.api_key;
-    apiKey.apiKey = process.env.FINNHUB_API_KEY;
-    finnhubClient = new finnhub.DefaultApi();
+    finnhubClient = new finnhub.DefaultApi(process.env.FINNHUB_API_KEY);
     ENABLED = true;
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error(e);
   }
 }

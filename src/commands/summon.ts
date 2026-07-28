@@ -4,7 +4,7 @@ import { respond, respondThreaded } from '../utils/respond';
 
 import sample from '../utils/sample';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 let ENABLED = false;
 let SEARCHCLIENT;
@@ -17,7 +17,6 @@ if (process.env.SEARCH_ENGINE_ID !== undefined && process.env.GOOGLE_SEARCH_API_
     );
     ENABLED = true;
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error(e);
   }
 }

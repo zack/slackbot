@@ -4,7 +4,7 @@ import { respond, respondThreaded } from '../utils/respond';
 
 import sample from '../utils/sample';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 let ENABLED;
 let GIPHYCLIENT;
@@ -15,7 +15,6 @@ if (process.env.GIPHY_API_KEY !== undefined && process.env.GIPHY_API_KEY.trim() 
     GIPHYCLIENT = giphy(process.env.GIPHY_API_KEY);
     ENABLED = true;
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error(e);
   }
 }
