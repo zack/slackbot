@@ -24,7 +24,7 @@ const stock = async ({ body, say, text }) => {
     return;
   }
 
-  finnhubClient.quote(text, (error, data) => {
+  finnhubClient.quote(text.toUpperCase(), (error, data) => {
     if (data.c > 0) {
       respond(say, body, `Current price for *${text.toUpperCase()}*: $${data.c}`);
     } else {

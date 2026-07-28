@@ -1,25 +1,38 @@
 import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import ImageSearch from 'image-search-google';
 import { respond, respondThreaded } from '../utils/respond';
 
 import sample from '../utils/sample';
 
 dotenv.config({ quiet: true });
 
-let ENABLED = false;
-let SEARCHCLIENT;
+const { SEARCH_ENGINE_ID, GOOGLE_SEARCH_API_KEY } = process.env;
+const ENABLED = SEARCH_ENGINE_ID !== undefined && GOOGLE_SEARCH_API_KEY !== undefined;
 
-if (process.env.SEARCH_ENGINE_ID !== undefined && process.env.GOOGLE_SEARCH_API_KEY !== undefined) {
-  try {
-    SEARCHCLIENT = new ImageSearch(
-      process.env.SEARCH_ENGINE_ID,
-      process.env.GOOGLE_SEARCH_API_KEY,
-    );
-    ENABLED = true;
-  } catch (e) {
-    console.error(e);
-  }
-}
+type ImageResult = {
+  url: string;
+  thumbnail: string;
+  snippet: string;
+  context: string;
+};
+
+const searchImages = async (query: string): Promise<ImageResult[]> => {
+  const params = new URLSearchParams({
+    q: query.replace(/\s/g, '+'),
+    searchType: 'image',
+    cx: SEARCH_ENGINE_ID as string,
+    key: GOOGLE_SEARCH_API_KEY as string,
+  });
+
+  const res = await fetch(`https://www.googleapis.com/customsearch/v1?${params.toString()}`);
+  const body = await res.json();
+
+  return (body.items || []).map((item) => ({
+    url: item.link,
+    thumbnail: item.image.thumbnailLink,
+    snippet: item.title,
+    context: item.image.contextLink,
+  }));
+};
 
 const summon = async ({
   body, text, say,
@@ -29,7 +42,7 @@ const summon = async ({
     return;
   }
 
-  const response = await SEARCHCLIENT.search(text);
+  const response = await searchImages(text);
   const image = sample(response);
   respond(say, body, `<${image.url}|${text}>`);
 };
