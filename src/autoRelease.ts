@@ -14,7 +14,9 @@ const scheduleAutoRelease = (app) => {
   const timezone = process.env.AUTO_RELEASE_TZ || 'America/New_York';
 
   cron.schedule(schedule, () => {
-    app.client.chat.postMessage({ channel, text: '?release' });
+    app.client.chat.postMessage({ channel, text: '?release' }).catch((err) => {
+      console.error('autoRelease: failed to post ?release', err);
+    });
   }, { timezone });
 };
 

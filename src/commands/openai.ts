@@ -186,6 +186,8 @@ const aiImage = async (app, body, channel, text, threadTs, timestamp, say, quali
     channel,
     name: 'art-loading',
     timestamp,
+  }).catch((err) => {
+    console.error('aiImage: failed to add art-loading reaction', err);
   });
 
   try {
@@ -215,11 +217,15 @@ const aiImage = async (app, body, channel, text, threadTs, timestamp, say, quali
       channel,
       name: 'art-loading',
       timestamp,
+    }).catch((err) => {
+      console.error('aiImage: failed to remove art-loading reaction', err);
     });
     app.client.reactions.add({
       channel,
       name: 'white_check_mark',
       timestamp,
+    }).catch((err) => {
+      console.error('aiImage: failed to add white_check_mark reaction', err);
     });
   }
 };
