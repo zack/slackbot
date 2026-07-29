@@ -13,6 +13,8 @@ const emojibomb = async ({ app, body }) => {
       channel,
       name: sample(emojiList),
       timestamp,
+    }).catch((err) => {
+      console.error('emojibomb: failed to add reaction', err);
     });
   }
 };

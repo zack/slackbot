@@ -11,13 +11,17 @@ const gotem = async ({ app, body }) => {
         channel,
         name: `alphabet-yellow-${letters[i]}`,
         timestamp,
+      }).catch((err) => {
+        console.error('gotem: failed to add reaction', err);
       });
 
       await timer(500);
     }
   }
 
-  run();
+  run().catch((err) => {
+    console.error('gotem: failed', err);
+  });
 };
 
 export default gotem;

@@ -11,6 +11,8 @@ const pong = async ({ app, body }) => {
     channel,
     name: sample(emojiList),
     timestamp,
+  }).catch((err) => {
+    console.error('ping: failed to add reaction', err);
   });
 };
 

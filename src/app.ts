@@ -8,6 +8,13 @@ import { consumeReleaseMarker } from './utils/releaseMarker';
 
 dotenv.config({ quiet: true });
 
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled rejection:', err);
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+});
+
 const { App } = require('@slack/bolt');
 
 const app = new App({
