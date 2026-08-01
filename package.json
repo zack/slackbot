@@ -24,7 +24,7 @@
     "finnhub": "^2.0.15",
     "giphy-api": "^2.0.2",
     "node-cron": "^4.6.0",
-    "openai": "^7.0.0",
+    "openai": "^7.1.0",
     "simple-git": "^3.19.1"
   },
   "devDependencies": {
