@@ -16,6 +16,7 @@ import github from './commands/github';
 import pong from './commands/ping';
 import rebuild from './commands/rebuild';
 import release from './commands/release';
+import restartCommand from './commands/restart';
 import rocket from './commands/rocket';
 import search from './commands/search';
 import { bubble, scrabble, meow } from './commands/spell';
@@ -125,6 +126,10 @@ const COMMANDS = {
   release: {
     func: release,
     help: 'Fetches and deploys the most recent commit of this slackbot.',
+  },
+  restart: {
+    func: restartCommand,
+    help: 'Restarts the bot without pulling new code.',
   },
   scrabble: {
     func: scrabble,
