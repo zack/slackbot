@@ -132,7 +132,7 @@ const COMMANDS = {
   },
   search: {
     func: search,
-    help: 'Searches learned messages for a user for an exact (case insensitive) substring. Shows the 3 most recent hits. e.g. `?search @zack foo bar`',
+    help: 'Searches learned messages for an exact (case insensitive) substring, showing 3 random hits. Pass a user first to scope it to them, e.g. `?search @zack foo bar`, or omit it to search everyone, e.g. `?search foo bar`.',
   },
   spongecase: {
     func: spongecase,
