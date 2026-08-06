@@ -5,6 +5,7 @@ import childProcess from 'child_process';
 import { respondThreaded } from '../utils/respond';
 import { clearReleaseMarker, writeReleaseMarker } from '../utils/releaseMarker';
 import rebuild from './rebuild';
+import restart from '../utils/restart';
 
 const options = {
   baseDir: process.cwd(),
@@ -63,10 +64,13 @@ const release = async ({ body, say }) => {
       return;
     }
 
-    // pm2 runs the bot via `tsx watch src/app.ts`, which already noticed
-    // the files the pull just changed and is restarting on its own — no
-    // need to trigger a restart ourselves.
     respondThreaded(say, body, 'Restarting...');
+
+    if (!restart({ body, say })) {
+      // No restart is coming from this attempt, so don't leave a marker
+      // around to falsely confirm some later, unrelated restart.
+      clearReleaseMarker();
+    }
   });
 };
 
