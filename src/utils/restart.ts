@@ -11,7 +11,7 @@ import { respondThreaded } from './respond';
 // guarantee a truly fresh read. Returns whether the restart was issued.
 const restart = ({ body, say }): boolean => {
   try {
-    childProcess.execSync(`pm2 restart ${path.basename(process.cwd())}`);
+    childProcess.execFileSync('pm2', ['restart', path.basename(process.cwd())]);
     return true;
   } catch (error: any) {
     respondThreaded(say, body, `Restart failed.\n\`\`\`${error.message}\`\`\``);
