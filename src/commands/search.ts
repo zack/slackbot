@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 
-import { respondUnthreaded } from '../utils/respond';
+import { respondThreaded } from '../utils/respond';
 
 const db = new Database('./db/local.db');
 db.pragma('journal_mode = WAL'); // https://github.com/WiseLibs/better-sqlite3#usage
@@ -12,7 +12,7 @@ const RE_USER = /^<@[^>]+>$/;
 // "50%" doesn't match anything starting with "50".
 const escapeLike = (value: string) => value.replace(/[\\%_]/g, (char) => `\\${char}`);
 
-const search = async ({ say, text }) => {
+const search = async ({ body, say, text }) => {
   const args = text.split(' ');
   const learnee = RE_USER.test(args[0]) ? args[0] : undefined;
   const query = learnee ? args.slice(1).join(' ') : text;
@@ -51,7 +51,7 @@ const search = async ({ say, text }) => {
     out = `No hits${learnee ? ` for ${learnee}` : ''} matching "${query}".`;
   }
 
-  respondUnthreaded(say, out);
+  respondThreaded(say, body, out);
 };
 
 export default search;
