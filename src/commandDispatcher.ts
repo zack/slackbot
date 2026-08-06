@@ -17,6 +17,7 @@ import pong from './commands/ping';
 import rebuild from './commands/rebuild';
 import release from './commands/release';
 import rocket from './commands/rocket';
+import search from './commands/search';
 import { bubble, scrabble, meow } from './commands/spell';
 import { randcase, spongecase } from './commands/spongecase';
 import stock from './commands/stock';
@@ -128,6 +129,10 @@ const COMMANDS = {
   scrabble: {
     func: scrabble,
     help: 'Spells out the arguments using scrabble emoji text. Flag -y for yellow.',
+  },
+  search: {
+    func: search,
+    help: 'Searches learned messages for a user by exact text match, case insensitive. Shows the 3 most recent hits. e.g. `?search @zack foo bar`',
   },
   spongecase: {
     func: spongecase,
