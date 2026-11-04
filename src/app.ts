@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-
 import announceEmojiChange from './emojiChanges';
 import scheduleAutoRelease from './autoRelease';
 import incrementChannelName from './channelIncrementer';
+import recoverFromSocketFailure from './socketRecovery';
 import { dispatchCommand, dispatchReaction } from './commandDispatcher';
 import { consumeReleaseMarker } from './utils/releaseMarker';
 
@@ -10,6 +11,7 @@ dotenv.config({ quiet: true });
 
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled rejection:', err);
+  recoverFromSocketFailure(err);
 });
 process.on('uncaughtException', (err) => {
   console.error('Uncaught exception:', err);
