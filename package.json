@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@slack/bolt": "^5.0.0",
-    "better-sqlite3": "^13.0.3",
+    "better-sqlite3": "^13.2.0",
     "date-fns": "^4.4.0",
     "dotenv": "^18.0.10",
     "finnhub": "^2.0.16",
